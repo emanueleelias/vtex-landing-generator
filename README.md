@@ -1,4 +1,4 @@
-# ⚡ VTEX Landing Generator
+# ⚡ VTEX IO Landing Generator
 
 **La forma más rápida y segura de construir Landing Pages para VTEX IO.**
 
