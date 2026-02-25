@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "Generador visual de landings VTEX IO (.jsonc)",
   "type": "module",
+  "author": "Emanuele, Elias Daniel",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "version:patch": "npm version patch && echo \"Nueva versión patch generada. Recordá hacer git push --tags\"",
+    "version:minor": "npm version minor && echo \"Nueva versión minor generada. Recordá hacer git push --tags\"",
+    "version:major": "npm version major && echo \"Nueva versión major generada. Recordá hacer git push --tags\""
   },
   "dependencies": {
     "lucide-react": "^0.469.0",

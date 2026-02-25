@@ -62,8 +62,10 @@ export default function App() {
             </div>
 
             {/* Footer */}
-            <footer className="py-2 text-center text-xs text-slate-500 bg-slate-900 border-t border-slate-800">
-                &copy; {new Date().getFullYear()} Todos los derechos reservados | Emanuele, Elias Daniel
+            <footer className="py-2 text-center text-xs text-slate-500 bg-slate-900 border-t border-slate-800 flex justify-center items-center gap-2">
+                <span>&copy; {new Date().getFullYear()} Todos los derechos reservados | Emanuele, Elias Daniel</span>
+                <span className="text-slate-700">•</span>
+                <span className="font-mono text-slate-400">v{__APP_VERSION__}</span>
             </footer>
         </div>
     )
