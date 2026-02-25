@@ -1,5 +1,5 @@
 import useLandingStore, { Block, BlockProps } from '../store/landingStore'
-import { getBlockDefinition } from '../engine/blockDefinitions'
+import { getBlockDefinition } from '../engine/blocks'
 import { Settings, Box } from 'lucide-react'
 
 export default function PropertiesPanel() {

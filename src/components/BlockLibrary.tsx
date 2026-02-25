@@ -1,6 +1,6 @@
 import React from 'react'
 import useLandingStore from '../store/landingStore'
-import blockDefinitions, { BlockDefinition } from '../engine/blockDefinitions'
+import blockDefinitions, { BlockDefinition } from '../engine/blocks'
 import {
     Type,
     Columns,

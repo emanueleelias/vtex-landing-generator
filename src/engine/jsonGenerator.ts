@@ -1,7 +1,7 @@
 /**
  * Genera la estructura JSONC completa de una landing VTEX IO.
  */
-import { getBlockDefinition } from './blockDefinitions'
+import { getBlockDefinition } from './blocks'
 import { Block } from '../store/landingStore'
 
 /**

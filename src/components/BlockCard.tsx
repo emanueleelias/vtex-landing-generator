@@ -1,5 +1,5 @@
 import useLandingStore, { Block } from '../store/landingStore'
-import { getBlockDefinition } from '../engine/blockDefinitions'
+import { getBlockDefinition } from '../engine/blocks'
 import {
     ChevronUp,
     ChevronDown,
