@@ -4,7 +4,7 @@ import packageJson from './package.json'
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/vtex-landing-generator/',
   define: {
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
