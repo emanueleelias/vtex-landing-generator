@@ -60,6 +60,11 @@ export default function App() {
                     <PropertiesPanel />
                 </aside>
             </div>
+
+            {/* Footer */}
+            <footer className="py-2 text-center text-xs text-slate-500 bg-slate-900 border-t border-slate-800">
+                &copy; {new Date().getFullYear()} Todos los derechos reservados | Emanuele, Elias Daniel
+            </footer>
         </div>
     )
 }
