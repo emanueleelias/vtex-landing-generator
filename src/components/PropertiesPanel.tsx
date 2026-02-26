@@ -62,9 +62,9 @@ export default function PropertiesPanel() {
                                     text-slate-900 dark:text-white focus:border-cyan-500/50 focus:bg-cyan-500/5
                                     focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner"
                             >
-                                <option value="">— Seleccioná un bloque —</option>
+                                <option value="" className="dark:bg-slate-800 dark:text-slate-200">— Seleccioná un bloque —</option>
                                 {blockKeys.map((key) => (
-                                    <option key={key} value={key}>
+                                    <option key={key} value={key} className="dark:bg-slate-800 dark:text-slate-200">
                                         {key}
                                     </option>
                                 ))}
@@ -222,7 +222,7 @@ function PropField({
                         className={`${baseInputClass} cursor-pointer`}
                     >
                         {schema.options?.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
+                            <option key={opt.value} value={opt.value} className="dark:bg-slate-800 dark:text-slate-200">
                                 {opt.label}
                             </option>
                         ))}
