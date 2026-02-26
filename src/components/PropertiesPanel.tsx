@@ -11,9 +11,10 @@ export default function PropertiesPanel() {
     const updateNodeProps = useLandingStore((s) => s.updateNodeProps)
     const updateNodeIdentifier = useLandingStore((s) => s.updateNodeIdentifier)
     const updateNodeTitle = useLandingStore((s) => s.updateNodeTitle)
-    const getSelectedNode = useLandingStore((s) => s.getSelectedNode)
 
-    const node = getSelectedNode()
+    // Subscribimos el componente al resultado de getSelectedNode() para que 
+    // re-renderice al modificar props o el identifier.
+    const node = useLandingStore((s) => s.getSelectedNode())
 
     if (!node) {
         return (

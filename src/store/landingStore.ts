@@ -132,12 +132,11 @@ function createNode(componentType: string, landingName: string): TreeNode {
   }
 
   const id = generateNodeId()
-  const shortId = id.split('-').pop() || '0'
 
   return {
     id,
     type: componentType,
-    identifier: `${landingName}-${componentType.replace(/\./g, '-')}-${shortId}`,
+    identifier: landingName,
     props: defaultProps,
     children: [],
   }
