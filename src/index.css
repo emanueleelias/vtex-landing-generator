@@ -10,10 +10,11 @@
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #0F172A;
   color: #E2E8F0;
   overflow: hidden;
   height: 100vh;
+  /* Fondo base espacial muy oscuro */
+  background-color: #050510; 
 }
 
 #root {
@@ -22,10 +23,10 @@ body {
   flex-direction: column;
 }
 
-/* Scrollbar personalizado */
+/* Scrollbar moderno semitransparente */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -33,12 +34,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 3px;
+  background: rgba(71, 85, 105, 0.4);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748B;
+  background: rgba(100, 116, 139, 0.8);
 }
 
 /* Transiciones suaves globales */
@@ -46,36 +47,95 @@ button,
 input,
 select,
 textarea {
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Focus ring estilo */
+/* Focus ring estilo cristal */
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #F71963;
+  box-shadow: 0 0 0 2px rgba(247, 25, 99, 0.3);
+}
+
+/* Glassmorphism Classes reutilizables */
+@layer utilities {
+  .glass-panel {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+  }
+  .glass-card {
+    @apply bg-slate-800/20 backdrop-blur-md border border-white/5 shadow-lg;
+  }
+}
+
+/* Mesh Gradient Animado (Fondo global) */
+.mesh-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-color: #050510;
+  overflow: hidden;
+}
+
+.mesh-blob-1,
+.mesh-blob-2,
+.mesh-blob-3 {
+  position: absolute;
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+.mesh-blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(20, 32, 50, 0.8) 0%, rgba(20, 32, 50, 0) 70%);
+  animation-duration: 25s;
+}
+
+.mesh-blob-2 {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(247, 25, 99, 0.15) 0%, rgba(247, 25, 99, 0) 70%);
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.mesh-blob-3 {
+  top: 40%;
+  left: 30%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, rgba(29, 78, 216, 0.1) 0%, rgba(29, 78, 216, 0) 70%);
+  animation-duration: 28s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, 5%) scale(1.05); }
+  100% { transform: translate(-5%, 10%) scale(0.95); }
 }
 
 /* Animación de entrada para bloques */
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .block-enter {
-  animation: slideIn 0.2s ease-out;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Indicador de drag */
+/* Indicador de drag (DnD) version Glass */
 .drag-over {
-  border-color: #F71963 !important;
-  background-color: rgba(247, 25, 99, 0.05) !important;
+  border-color: rgba(247, 25, 99, 0.6) !important;
+  background-color: rgba(247, 25, 99, 0.1) !important;
 }

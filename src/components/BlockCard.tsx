@@ -42,11 +42,11 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
         data: { type: 'existing-node', node },
     })
 
-    // Colores por categoría
+    // Colores por categoría adaptados a Glassmorphism
     const categoryColors: Record<string, { border: string; bg: string; badge: string }> = {
-        layout: { border: 'border-blue-500/50', bg: 'bg-blue-500/5', badge: 'bg-blue-500/15 text-blue-400' },
-        content: { border: 'border-amber-500/50', bg: 'bg-amber-500/5', badge: 'bg-amber-500/15 text-amber-400' },
-        media: { border: 'border-purple-500/50', bg: 'bg-purple-500/5', badge: 'bg-purple-500/15 text-purple-400' },
+        layout: { border: 'border-blue-500/30', bg: 'bg-blue-500/10', badge: 'bg-blue-500/20 text-blue-300 border border-blue-500/30' },
+        content: { border: 'border-amber-500/30', bg: 'bg-amber-500/10', badge: 'bg-amber-500/20 text-amber-300 border border-amber-500/30' },
+        media: { border: 'border-purple-500/30', bg: 'bg-purple-500/10', badge: 'bg-purple-500/20 text-purple-300 border border-purple-500/30' },
     }
 
     const category = definition?.category || 'layout'
@@ -55,10 +55,10 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
     return (
         <div>
             <div
-                className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-pointer
+                className={`flex items-center gap-2 p-2.5 rounded-xl border backdrop-blur-md shadow-sm transition-all cursor-pointer
           ${isSelected
-                        ? `${colors.bg} ${colors.border} shadow-lg`
-                        : 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600'
+                        ? `${colors.bg} ${colors.border} ring-1 ring-${colors.border.split('-')[1]}-500/50 shadow-lg`
+                        : 'bg-black/20 border-white/5 hover:border-white/20 hover:bg-black/40'
                     }
           ${isDragging ? 'opacity-40 border-dashed border-pink-500' : ''}`}
                 onClick={() => selectNode(node.id)}
@@ -105,7 +105,6 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                     </p>
                 </div>
 
-                {/* Acciones */}
                 <div className="flex items-center gap-0.5 flex-shrink-0">
                     <button
                         onClick={(e) => {
@@ -113,7 +112,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             moveNode(node.id, -1)
                         }}
                         disabled={index === 0}
-                        className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
+                        className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10
               disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                         title="Mover arriba"
                     >
@@ -125,7 +124,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             moveNode(node.id, 1)
                         }}
                         disabled={index === total - 1}
-                        className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
+                        className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10
               disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                         title="Mover abajo"
                     >
@@ -136,7 +135,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             e.stopPropagation()
                             removeNode(node.id)
                         }}
-                        className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        className="p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/20 transition-colors"
                         title="Eliminar"
                     >
                         <Trash2 size={13} />
@@ -146,7 +145,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
 
             {/* Render children recursivo con DropZones */}
             {!collapsed && acceptsChildren && (
-                <div className="mt-1 flex flex-col border-l-2 border-slate-700/50 ml-4 pb-1">
+                <div className="mt-1 flex flex-col border-l-2 border-white/10 ml-4 pb-1">
                     {hasChildren ? (
                         <>
                             {node.children.map((child, i) => (
@@ -166,7 +165,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             id={`${node.id}-inside-empty`}
                             parentId={node.id}
                             index={0}
-                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px] text-slate-500"
+                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-white/20 flex items-center justify-center text-[10px] text-slate-400 bg-black/10"
                             text="Soltá componentes aquí"
                         />
                     )}

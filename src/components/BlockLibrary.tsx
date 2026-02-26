@@ -51,12 +51,12 @@ function DraggableComponent({ definition, onAdd }: { definition: VtexComponentDe
             {...listeners}
             {...attributes}
             onClick={onAdd}
-            className={`w-full flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/50
-        hover:bg-slate-800 border border-slate-700/50 hover:border-pink-500/30
-        transition-all group cursor-grab active:cursor-grabbing text-left
+            className={`w-full flex items-center gap-3 p-2.5 rounded-xl bg-black/20 backdrop-blur-sm
+        hover:bg-white/5 border border-white/5 hover:border-pink-500/30
+        transition-all shadow-sm group cursor-grab active:cursor-grabbing text-left
         ${isDragging ? 'opacity-50 ring-2 ring-pink-500' : ''}`}
         >
-            <div className="w-9 h-9 rounded-lg bg-slate-700/50 group-hover:bg-pink-500/10
+            <div className="w-9 h-9 rounded-lg bg-black/30 group-hover:bg-pink-500/10 border border-white/5
         flex items-center justify-center flex-shrink-0 transition-colors"
             >
                 <IconComponent
@@ -105,12 +105,12 @@ export default function BlockLibrary() {
     }
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="px-4 py-3 border-b border-slate-800">
-                <h2 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+        <div className="flex flex-col h-full relative z-10">
+            <div className="px-4 py-3 border-b border-white/10">
+                <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider drop-shadow-sm">
                     Componentes
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                     Click o arrastrar al canvas
                 </p>
                 {selectedNodeId && (

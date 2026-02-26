@@ -18,9 +18,8 @@ export default function Canvas() {
 
     return (
         <div className="flex flex-col h-full">
-            {/* Header */}
-            <div className="flex items-center gap-2 px-4 pt-3 pb-0">
-                <div className="flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-t-lg text-sm font-medium text-white border-t border-l border-r border-slate-700">
+            <div className="flex items-center gap-2 px-4 pt-3 pb-0 z-10 relative">
+                <div className="flex items-center gap-2 px-4 py-2 glass-panel border-b-0 rounded-t-xl text-sm font-medium text-slate-200">
                     <LayoutList size={16} />
                     Estructura
                     <span className="text-xs px-1.5 py-0.5 rounded-full bg-pink-500/20 text-pink-400">
@@ -31,7 +30,7 @@ export default function Canvas() {
 
             {/* Contenido */}
             <div
-                className="flex-1 bg-slate-800 mx-4 mb-4 rounded-b-xl rounded-tr-xl border border-slate-700 overflow-y-auto"
+                className="flex-1 bg-black/20 mx-4 mb-4 rounded-b-xl rounded-tr-xl border border-white/5 overflow-y-auto relative z-0 backdrop-blur-md shadow-inner"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) selectNode(null)
                 }}
@@ -42,14 +41,14 @@ export default function Canvas() {
                             id="root-empty"
                             parentId={null}
                             index={0}
-                            className="absolute inset-4 rounded-xl border-2 border-dashed border-slate-700/50 flex items-center justify-center text-sm font-medium z-10 bg-slate-800/20"
+                            className="absolute inset-4 rounded-xl border-2 border-dashed border-slate-600/50 flex items-center justify-center text-sm font-medium z-10 bg-slate-800/10"
                             text="Soltá un componente aquí"
                         />
-                        <LayoutList size={48} className="mb-3 opacity-30" />
-                        <p className="text-sm font-medium">Sin componentes</p>
-                        <p className="text-xs mt-1 text-center px-8 relative z-20 pointer-events-none">
+                        <LayoutList size={48} className="mb-3 opacity-30 text-white" />
+                        <p className="text-sm font-medium text-slate-300">Sin componentes</p>
+                        <p className="text-xs mt-1 text-center px-8 relative z-20 pointer-events-none text-slate-400">
                             Seleccioná o arrastrá un componente del panel izquierdo para comenzar.
-                            Usá <span className="text-blue-400 font-medium">Responsive Desktop</span> y <span className="text-blue-400 font-medium">Responsive Mobile</span> para separar las vistas.
+                            Usá <span className="text-pink-400/80 font-medium">Responsive Desktop</span> y <span className="text-pink-400/80 font-medium">Responsive Mobile</span> para separar las vistas.
                         </p>
                     </div>
                 ) : (

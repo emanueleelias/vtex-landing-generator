@@ -84,9 +84,15 @@ export default function App() {
             onDragEnd={handleDragEnd}
             collisionDetection={pointerWithin} // point intersection is better for thin DropZones
         >
-            <div className="flex flex-col h-screen bg-slate-950">
+            <div className="mesh-bg">
+                <div className="mesh-blob-1" />
+                <div className="mesh-blob-2" />
+                <div className="mesh-blob-3" />
+            </div>
+
+            <div className="flex flex-col h-screen relative z-0">
                 {/* Header */}
-                <header className="flex items-center justify-between px-6 py-3 bg-slate-900 border-b border-slate-800">
+                <header className="flex items-center justify-between px-6 py-3 glass-panel border-b-0 rounded-b-2xl mx-4 mt-2 shadow-2xl">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
@@ -108,9 +114,9 @@ export default function App() {
                                 value={landingName}
                                 onChange={(e) => setLandingName(e.target.value)}
                                 placeholder="nombre-de-la-landing"
-                                className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white
-             placeholder-slate-500 focus:border-pink-500 focus:ring-1 focus:ring-pink-500/30
-             transition-all w-64"
+                                className="bg-black/20 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white
+             placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5 focus:ring-1 focus:ring-pink-500/30
+             transition-all w-64 backdrop-blur-sm shadow-inner"
                             />
                         </div>
                     </div>
@@ -119,28 +125,28 @@ export default function App() {
                 </header>
 
                 {/* Layout principal 3 paneles */}
-                <div className="flex flex-1 overflow-hidden">
+                <div className="flex flex-1 overflow-hidden mt-4 gap-4 px-4 pb-4">
                     {/* Panel izquierdo: Biblioteca de bloques */}
-                    <aside className="w-64 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col z-10">
+                    <aside className="w-64 flex-shrink-0 glass-panel border-b-0 rounded-2xl flex flex-col z-10 shadow-2xl overflow-hidden">
                         <BlockLibrary />
                     </aside>
 
                     {/* Panel central: Canvas */}
-                    <main className="flex-1 flex flex-col overflow-hidden">
+                    <main className="flex-1 flex flex-col overflow-hidden rounded-2xl border border-white/5 bg-black/10 shadow-inner">
                         <Canvas />
                     </main>
 
                     {/* Panel derecho: Propiedades */}
-                    <aside className="w-80 flex-shrink-0 bg-slate-900 border-l border-slate-800 flex flex-col z-10">
+                    <aside className="w-80 flex-shrink-0 glass-panel border-b-0 rounded-2xl flex flex-col z-10 shadow-2xl overflow-hidden">
                         <PropertiesPanel />
                     </aside>
                 </div>
 
-                {/* Footer */}
-                <footer className="py-2 text-center text-xs text-slate-500 bg-slate-900 border-t border-slate-800 flex justify-center items-center gap-2">
-                    <span>&copy; {new Date().getFullYear()} Todos los derechos reservados | Emanuele, Elias Daniel</span>
-                    <span className="text-slate-700">•</span>
-                    <span className="font-mono text-slate-400">v{__APP_VERSION__}</span>
+                {/* Footer flotante */}
+                <footer className="absolute bottom-2 left-1/2 -translate-x-1/2 py-1.5 px-4 rounded-full text-[10px] text-slate-400 glass-panel flex items-center gap-2 shadow-lg">
+                    <span>&copy; {new Date().getFullYear()} Emanuele, Elias Daniel</span>
+                    <span className="text-slate-600">•</span>
+                    <span className="font-mono text-pink-400/80">v{__APP_VERSION__}</span>
                 </footer>
             </div>
 
