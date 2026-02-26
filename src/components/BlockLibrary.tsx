@@ -118,7 +118,7 @@ export default function BlockLibrary() {
           Componentes
         </h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-          Click o arrastrar al canvas
+          Arrastrar al canvas
         </p>
         {selectedNodeId && (
           <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
