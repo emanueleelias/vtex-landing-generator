@@ -2,6 +2,7 @@ import BlockLibrary from './components/BlockLibrary'
 import Canvas from './components/Canvas'
 import PropertiesPanel from './components/PropertiesPanel'
 import ExportButton from './components/ExportButton'
+import ProjectManager from './components/ProjectManager'
 import useLandingStore from './store/landingStore'
 import {
     DndContext,
@@ -13,7 +14,7 @@ import {
 } from '@dnd-kit/core'
 import { useState, useEffect } from 'react'
 import { getComponentDefinition } from './engine/vtexComponents'
-import { Box, Sun, Moon } from 'lucide-react'
+import { Box, Sun, Moon, FolderOpen, Trash2, X } from 'lucide-react'
 
 // Componente simple para el DragOverlay
 function DragOverlayCard({ activeData }: { activeData: any }) {
@@ -58,6 +59,23 @@ export default function App() {
 
     const [activeId, setActiveId] = useState<string | null>(null)
     const [activeData, setActiveData] = useState<any>(null)
+    const [projectManagerOpen, setProjectManagerOpen] = useState(false)
+    const [confirmClear, setConfirmClear] = useState(false)
+
+    // Tooltip de onboarding: se muestra solo la primera vez
+    const [showOnboarding, setShowOnboarding] = useState(() => {
+        return !localStorage.getItem('vtex-lg-onboarding-dismissed')
+    })
+
+    const dismissOnboarding = () => {
+        setShowOnboarding(false)
+        localStorage.setItem('vtex-lg-onboarding-dismissed', 'true')
+    }
+
+    const handleClearCanvas = () => {
+        useLandingStore.setState({ tree: [], selectedNodeId: null, landingName: 'mi-landing' })
+        setConfirmClear(false)
+    }
 
     const handleDragStart = (event: DragStartEvent) => {
         setActiveId(event.active.id as string)
@@ -105,7 +123,7 @@ export default function App() {
 
             <div className="flex flex-col h-screen relative z-0 text-slate-800 dark:text-slate-100">
                 {/* Header */}
-                <header className="flex items-center justify-between px-6 py-3 glass-panel border-b-0 rounded-b-2xl mx-4 mt-2 shadow-2xl">
+                <header className="flex items-center justify-between px-6 py-3 glass-panel border-b-0 rounded-b-2xl mx-4 mt-2 shadow-sm dark:shadow-2xl z-50">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-md">
@@ -158,7 +176,70 @@ export default function App() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        {/* Botón limpiar canvas */}
+                        {confirmClear ? (
+                            <div className="flex items-center gap-1 px-2 py-1 rounded-xl bg-red-500/10 border border-red-500/30 animate-in">
+                                <span className="text-[10px] text-red-500 font-medium whitespace-nowrap">¿Limpiar todo?</span>
+                                <button
+                                    onClick={handleClearCanvas}
+                                    className="p-1 rounded-lg text-red-500 hover:bg-red-500/20 transition-colors"
+                                    title="Confirmar"
+                                >
+                                    <Trash2 size={14} />
+                                </button>
+                                <button
+                                    onClick={() => setConfirmClear(false)}
+                                    className="p-1 rounded-lg text-slate-400 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                                    title="Cancelar"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setConfirmClear(true)}
+                                className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors shadow-sm"
+                                title="Limpiar canvas"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        )}
+
+                        {/* Botón proyectos con tooltip onboarding */}
+                        <div className="relative">
+                            <button
+                                onClick={() => {
+                                    setProjectManagerOpen(true)
+                                    if (showOnboarding) dismissOnboarding()
+                                }}
+                                className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors shadow-sm"
+                                title="Proyectos guardados"
+                            >
+                                <FolderOpen size={18} />
+                            </button>
+
+                            {/* Tooltip onboarding */}
+                            {showOnboarding && (
+                                <div className="absolute top-full right-0 mt-3 w-64 p-3 rounded-xl bg-white dark:bg-slate-800 border border-black/10 dark:border-white/10 shadow-2xl z-[100]">
+                                    <button
+                                        onClick={dismissOnboarding}
+                                        className="absolute top-1.5 right-1.5 p-0.5 rounded text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                    <p className="text-xs font-semibold text-pink-500 mb-1">💾 Auto-guardado activo</p>
+                                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                                        Tu trabajo se guarda automáticamente. Si recargás la página, todo se restaura.
+                                    </p>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                                        Usá este botón <strong>📂</strong> para guardar snapshots y alternar entre múltiples proyectos.
+                                    </p>
+                                    <div className="h-2 w-2 bg-white dark:bg-slate-800 border-t border-l border-black/10 dark:border-white/10 rotate-45 absolute -top-[5px] right-4" />
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             onClick={toggleTheme}
                             className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors shadow-sm"
@@ -201,6 +282,8 @@ export default function App() {
             >
                 {activeId ? <DragOverlayCard activeData={activeData} /> : null}
             </DragOverlay>
+
+            <ProjectManager isOpen={projectManagerOpen} onClose={() => setProjectManagerOpen(false)} />
         </DndContext>
     )
 }

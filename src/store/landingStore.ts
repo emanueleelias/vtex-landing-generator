@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { TreeNode } from '../engine/types'
 
 export type GenerationMode = 'landing' | 'block'
@@ -187,133 +188,146 @@ function createNode(componentType: string, landingName: string): TreeNode {
 
 // --- Store ---
 
-const useLandingStore = create<LandingState>((set, get) => ({
-  landingName: 'mi-landing',
-  generationMode: 'landing' as GenerationMode,
-  tree: [],
-  selectedNodeId: null,
-  theme: 'dark',
+const useLandingStore = create<LandingState>()(
+  persist(
+    (set, get) => ({
+      landingName: 'mi-landing',
+      generationMode: 'landing' as GenerationMode,
+      tree: [],
+      selectedNodeId: null,
+      theme: 'dark',
 
-  setLandingName: (name) => {
-    const slug = name
-      .toLowerCase()
-      .replace(/[^a-z0-9-\s]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-    set({ landingName: slug || 'mi-landing' })
-  },
+      setLandingName: (name) => {
+        const slug = name
+          .toLowerCase()
+          .replace(/[^a-z0-9-\s]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim()
+        set({ landingName: slug || 'mi-landing' })
+      },
 
-  setGenerationMode: (mode) => set({ generationMode: mode }),
+      setGenerationMode: (mode) => set({ generationMode: mode }),
 
-  selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
+      selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
-  insertNodeAtIndex: (parentId, index, componentType, targetType = 'children') => {
-    const { landingName } = get()
-    const newNode = createNode(componentType, landingName)
-    set((state) => ({
-      tree: insertNodeAt(state.tree, parentId, index, newNode, targetType),
-      selectedNodeId: newNode.id,
-    }))
-  },
+      insertNodeAtIndex: (parentId, index, componentType, targetType = 'children') => {
+        const { landingName } = get()
+        const newNode = createNode(componentType, landingName)
+        set((state) => ({
+          tree: insertNodeAt(state.tree, parentId, index, newNode, targetType),
+          selectedNodeId: newNode.id,
+        }))
+      },
 
-  moveNodeTo: (nodeId, newParentId, index, targetType = 'children') => {
-    set((state) => {
-      const { newTree, node } = removeAndGetNode(state.tree, nodeId)
-      if (!node) return state
-      return {
-        tree: insertNodeAt(newTree, newParentId, index, node, targetType),
-      }
-    })
-  },
+      moveNodeTo: (nodeId, newParentId, index, targetType = 'children') => {
+        set((state) => {
+          const { newTree, node } = removeAndGetNode(state.tree, nodeId)
+          if (!node) return state
+          return {
+            tree: insertNodeAt(newTree, newParentId, index, node, targetType),
+          }
+        })
+      },
 
-  addNode: (parentId, componentType) => {
-    const { landingName } = get()
-    const newNode = createNode(componentType, landingName)
-    // Add the __title property to the new node's props
-    newNode.props.__title = ''
+      addNode: (parentId, componentType) => {
+        const { landingName } = get()
+        const newNode = createNode(componentType, landingName)
+        // Add the __title property to the new node's props
+        newNode.props.__title = ''
 
-    if (parentId === null) {
-      set((state) => ({
-        tree: [...state.tree, newNode],
-        selectedNodeId: newNode.id,
-      }))
-    } else {
-      set((state) => ({
-        tree: insertIntoParent(state.tree, parentId, newNode),
-        selectedNodeId: newNode.id,
-      }))
-    }
-  },
-
-  removeNode: (nodeId) => {
-    set((state) => ({
-      tree: removeFromTree(state.tree, nodeId),
-      selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
-    }))
-  },
-
-  moveNode: (nodeId, direction) => {
-    set((state) => ({
-      tree: moveInTree(state.tree, nodeId, direction),
-    }))
-  },
-
-  updateNodeProps: (nodeId, newProps) => {
-    const updater = (node: TreeNode): TreeNode => ({
-      ...node,
-      props: { ...node.props, ...newProps },
-    })
-    set((state) => ({
-      tree: updateInTree(state.tree, nodeId, updater),
-    }))
-  },
-
-  updateNodeIdentifier: (nodeId, identifier) => {
-    const updater = (node: TreeNode): TreeNode => ({ ...node, identifier })
-    set((state) => ({
-      tree: updateInTree(state.tree, nodeId, updater),
-    }))
-  },
-
-  updateNodeTitle: (nodeId, title) => {
-    const updater = (node: TreeNode): TreeNode => ({
-      ...node,
-      title, // Actualiza el campo title a nivel de nodo
-    })
-    set((state) => ({
-      tree: updateInTree(state.tree, nodeId, updater),
-    }))
-  },
-
-
-  getSelectedNode: () => {
-    const { selectedNodeId, tree } = get()
-    if (!selectedNodeId) return null
-    return findNode(tree, selectedNodeId)
-  },
-
-  toggleTheme: () => {
-    set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' }))
-  },
-
-  getAllBlockKeys: () => {
-    const { tree } = get()
-    const keys: string[] = []
-    function collect(nodes: TreeNode[]) {
-      for (const node of nodes) {
-        if (node.type !== '__block-reference') {
-          keys.push(`${node.type}#${node.identifier}`)
+        if (parentId === null) {
+          set((state) => ({
+            tree: [...state.tree, newNode],
+            selectedNodeId: newNode.id,
+          }))
+        } else {
+          set((state) => ({
+            tree: insertIntoParent(state.tree, parentId, newNode),
+            selectedNodeId: newNode.id,
+          }))
         }
-        collect(node.children)
-        if (node.blocks) {
-          collect(node.blocks)
+      },
+
+      removeNode: (nodeId) => {
+        set((state) => ({
+          tree: removeFromTree(state.tree, nodeId),
+          selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+        }))
+      },
+
+      moveNode: (nodeId, direction) => {
+        set((state) => ({
+          tree: moveInTree(state.tree, nodeId, direction),
+        }))
+      },
+
+      updateNodeProps: (nodeId, newProps) => {
+        const updater = (node: TreeNode): TreeNode => ({
+          ...node,
+          props: { ...node.props, ...newProps },
+        })
+        set((state) => ({
+          tree: updateInTree(state.tree, nodeId, updater),
+        }))
+      },
+
+      updateNodeIdentifier: (nodeId, identifier) => {
+        const updater = (node: TreeNode): TreeNode => ({ ...node, identifier })
+        set((state) => ({
+          tree: updateInTree(state.tree, nodeId, updater),
+        }))
+      },
+
+      updateNodeTitle: (nodeId, title) => {
+        const updater = (node: TreeNode): TreeNode => ({
+          ...node,
+          title, // Actualiza el campo title a nivel de nodo
+        })
+        set((state) => ({
+          tree: updateInTree(state.tree, nodeId, updater),
+        }))
+      },
+
+
+      getSelectedNode: () => {
+        const { selectedNodeId, tree } = get()
+        if (!selectedNodeId) return null
+        return findNode(tree, selectedNodeId)
+      },
+
+      toggleTheme: () => {
+        set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' }))
+      },
+
+      getAllBlockKeys: () => {
+        const { tree } = get()
+        const keys: string[] = []
+        function collect(nodes: TreeNode[]) {
+          for (const node of nodes) {
+            if (node.type !== '__block-reference') {
+              keys.push(`${node.type}#${node.identifier}`)
+            }
+            collect(node.children)
+            if (node.blocks) {
+              collect(node.blocks)
+            }
+          }
         }
-      }
+        collect(tree)
+        return keys
+      },
+    }),
+    {
+      name: 'vtex-landing-generator-current',
+      partialize: (state) => ({
+        landingName: state.landingName,
+        generationMode: state.generationMode,
+        tree: state.tree,
+        theme: state.theme,
+      }),
     }
-    collect(tree)
-    return keys
-  },
-}))
+  )
+)
 
 export default useLandingStore
