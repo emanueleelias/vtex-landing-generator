@@ -1,111 +1,149 @@
-import useLandingStore, { Block } from '../store/landingStore'
-import { getBlockDefinition } from '../engine/blocks'
+/**
+ * Tarjeta visual de un nodo en el árbol del canvas.
+ * Muestra tipo, identifier, acciones y children anidados.
+ */
+import useLandingStore from '../store/landingStore'
+import { getComponentDefinition } from '../engine/vtexComponents'
+import type { TreeNode } from '../engine/types'
 import {
     ChevronUp,
     ChevronDown,
     Trash2,
     Copy,
-    Box,
     GripVertical,
+    ChevronRight,
+    ChevronDown as ChevronExpand,
 } from 'lucide-react'
+import { useState } from 'react'
 
-interface BlockCardProps {
-    block: Block
+interface NodeCardProps {
+    node: TreeNode
     index: number
     total: number
+    depth: number
 }
 
-export default function BlockCard({ block, index, total }: BlockCardProps) {
-    const selectedBlockId = useLandingStore((s) => s.selectedBlockId)
-    const selectBlock = useLandingStore((s) => s.selectBlock)
-    const removeBlock = useLandingStore((s) => s.removeBlock)
-    const moveBlock = useLandingStore((s) => s.moveBlock)
-    const duplicateBlock = useLandingStore((s) => s.duplicateBlock)
+export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
+    const selectedNodeId = useLandingStore((s) => s.selectedNodeId)
+    const selectNode = useLandingStore((s) => s.selectNode)
+    const removeNode = useLandingStore((s) => s.removeNode)
+    const moveNode = useLandingStore((s) => s.moveNode)
+    const duplicateNode = useLandingStore((s) => s.duplicateNode)
 
-    const definition = getBlockDefinition(block.type)
-    const isSelected = selectedBlockId === block.id
+    const [collapsed, setCollapsed] = useState(false)
+
+    const definition = getComponentDefinition(node.type)
+    const isSelected = selectedNodeId === node.id
+    const hasChildren = node.children.length > 0
+    const acceptsChildren = definition?.acceptsChildren ?? false
+
+    // Colores por categoría
+    const categoryColors: Record<string, { border: string; bg: string; badge: string }> = {
+        layout: { border: 'border-blue-500/50', bg: 'bg-blue-500/5', badge: 'bg-blue-500/15 text-blue-400' },
+        content: { border: 'border-amber-500/50', bg: 'bg-amber-500/5', badge: 'bg-amber-500/15 text-amber-400' },
+        media: { border: 'border-purple-500/50', bg: 'bg-purple-500/5', badge: 'bg-purple-500/15 text-purple-400' },
+    }
+
+    const category = definition?.category || 'layout'
+    const colors = categoryColors[category] || categoryColors.layout
 
     return (
         <div
-            className={`block-enter flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer
-        ${isSelected
-                    ? 'bg-slate-700/80 border-pink-500/50 shadow-lg shadow-pink-500/5'
-                    : 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600'
-                }`}
-            onClick={() => selectBlock(block.id)}
+            style={{ marginLeft: depth * 16 }}
         >
-            {/* Grip */}
-            <div className="flex-shrink-0 text-slate-600">
-                <GripVertical size={16} />
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-slate-200">
-                        {definition?.label || block.type}
-                    </p>
-                    {block.useContainer && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            <Box size={10} />
-                            Container
-                        </span>
-                    )}
+            <div
+                className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-pointer
+          ${isSelected
+                        ? `${colors.bg} ${colors.border} shadow-lg`
+                        : 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600'
+                    }`}
+                onClick={() => selectNode(node.id)}
+            >
+                {/* Grip */}
+                <div className="flex-shrink-0 text-slate-600">
+                    <GripVertical size={14} />
                 </div>
-                <p className="text-xs text-slate-500 truncate mt-0.5">
-                    {block.containerTitle || definition?.description || ''}
-                </p>
+
+                {/* Toggle expand/collapse */}
+                {hasChildren ? (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setCollapsed(!collapsed) }}
+                        className="flex-shrink-0 p-0.5 rounded text-slate-400 hover:text-white transition-colors"
+                    >
+                        {collapsed ? <ChevronRight size={14} /> : <ChevronExpand size={14} />}
+                    </button>
+                ) : (
+                    <div className="w-[18px] flex-shrink-0" />
+                )}
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-slate-200 truncate">
+                            {definition?.label || node.type}
+                        </p>
+                        {acceptsChildren && (
+                            <span className={`inline-flex items-center text-[9px] font-semibold px-1.5 py-px rounded-full ${colors.badge}`}>
+                                {node.children.length}
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-[10px] text-slate-500 font-mono truncate">
+                        #{node.identifier}
+                    </p>
+                </div>
+
+                {/* Acciones */}
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); moveNode(node.id, -1) }}
+                        disabled={index === 0}
+                        className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
+              disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        title="Mover arriba"
+                    >
+                        <ChevronUp size={13} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); moveNode(node.id, 1) }}
+                        disabled={index === total - 1}
+                        className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
+              disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        title="Mover abajo"
+                    >
+                        <ChevronDown size={13} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); duplicateNode(node.id) }}
+                        className="p-1 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
+                        title="Duplicar"
+                    >
+                        <Copy size={13} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); removeNode(node.id) }}
+                        className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        title="Eliminar"
+                    >
+                        <Trash2 size={13} />
+                    </button>
+                </div>
             </div>
 
-            {/* Acciones */}
-            <div className="flex items-center gap-1 flex-shrink-0">
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        moveBlock(block.id, -1)
-                    }}
-                    disabled={index === 0}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
-                     disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                    title="Mover arriba"
-                >
-                    <ChevronUp size={14} />
-                </button>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        moveBlock(block.id, 1)
-                    }}
-                    disabled={index === total - 1}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
-                     disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                    title="Mover abajo"
-                >
-                    <ChevronDown size={14} />
-                </button>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        duplicateBlock(block.id)
-                    }}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-500/10
-                     transition-colors"
-                    title="Duplicar"
-                >
-                    <Copy size={14} />
-                </button>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        removeBlock(block.id)
-                    }}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10
-                     transition-colors"
-                    title="Eliminar"
-                >
-                    <Trash2 size={14} />
-                </button>
-            </div>
+            {/* Render children recursivo */}
+            {!collapsed && hasChildren && (
+                <div className="mt-1 space-y-1 border-l-2 border-slate-700/50 ml-4">
+                    {node.children.map((child, i) => (
+                        <NodeCard
+                            key={child.id}
+                            node={child}
+                            index={i}
+                            total={node.children.length}
+                            depth={1}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

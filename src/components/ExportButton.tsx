@@ -8,16 +8,16 @@ export default function ExportButton() {
 
     const handleExport = async () => {
         const state = useLandingStore.getState()
-        const { landingName, desktopBlocks, mobileBlocks } = state
+        const { landingName, desktopTree, mobileTree } = state
 
-        if (desktopBlocks.length === 0 && mobileBlocks.length === 0) {
+        if (desktopTree.length === 0 && mobileTree.length === 0) {
             setStatus('error')
             setTimeout(() => setStatus('idle'), 2000)
             return
         }
 
         try {
-            const json = generateLandingJSON(state)
+            const json = generateLandingJSON({ landingName, desktopTree, mobileTree })
             const content = serializeToJSONC(json, landingName)
 
             await navigator.clipboard.writeText(content)
@@ -43,7 +43,7 @@ export default function ExportButton() {
                 return (
                     <>
                         <AlertCircle size={16} />
-                        <span>Agregá bloques primero</span>
+                        <span>Agregá componentes primero</span>
                     </>
                 )
             default:
@@ -71,7 +71,7 @@ export default function ExportButton() {
         <button
             onClick={handleExport}
             className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white
-                  border transition-all shadow-lg ${getButtonClass()}`}
+        border transition-all shadow-lg ${getButtonClass()}`}
         >
             {getButtonContent()}
         </button>
