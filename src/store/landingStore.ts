@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import type { TreeNode } from '../engine/types'
-import { getComponentDefinition } from '../engine/vtexComponents'
 
 export type GenerationMode = 'landing' | 'block'
 
@@ -130,22 +129,13 @@ function removeAndGetNode(tree: TreeNode[], id: string): { newTree: TreeNode[], 
 }
 
 function createNode(componentType: string, landingName: string): TreeNode {
-  const definition = getComponentDefinition(componentType)
-  const defaultProps: Record<string, any> = {}
-
-  if (definition) {
-    definition.propsSchema.forEach((prop) => {
-      defaultProps[prop.name] = prop.default
-    })
-  }
-
   const id = generateNodeId()
 
   return {
     id,
     type: componentType,
     identifier: landingName,
-    props: defaultProps,
+    props: {},
     children: [],
   }
 }

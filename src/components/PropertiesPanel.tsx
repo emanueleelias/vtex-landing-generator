@@ -191,10 +191,11 @@ function PropField({
                     <div>
                         <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block drop-shadow-sm">{schema.label}</label>
                         <textarea
-                            value={value ?? schema.default}
+                            value={value ?? ''}
                             onChange={(e) => onChange(e.target.value)}
+                            placeholder={`Ej: ${schema.default}`}
                             rows={4}
-                            className={`${baseInputClass} resize-y`}
+                            className={`${baseInputClass} resize-y placeholder:italic`}
                         />
                     </div>
                 )
@@ -204,10 +205,10 @@ function PropField({
                     <label className="text-xs text-slate-500 mb-1 block">{schema.label}</label>
                     <input
                         type="text"
-                        value={value ?? schema.default}
+                        value={value ?? ''}
                         onChange={(e) => onChange(e.target.value)}
-                        placeholder={String(schema.default)}
-                        className={baseInputClass}
+                        placeholder={`Ej: ${schema.default}`}
+                        className={`${baseInputClass} placeholder:italic`}
                     />
                 </div>
             )
@@ -217,10 +218,13 @@ function PropField({
                 <div>
                     <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block drop-shadow-sm">{schema.label}</label>
                     <select
-                        value={value ?? schema.default}
+                        value={value ?? ''}
                         onChange={(e) => onChange(e.target.value)}
                         className={`${baseInputClass} cursor-pointer`}
                     >
+                        <option value="" disabled className="dark:bg-slate-800 dark:text-slate-400 italic">
+                            — Seleccionar ({String(schema.default)}) —
+                        </option>
                         {schema.options?.map((opt) => (
                             <option key={opt.value} value={opt.value} className="dark:bg-slate-800 dark:text-slate-200">
                                 {opt.label}
@@ -233,11 +237,18 @@ function PropField({
         case 'boolean':
             return (
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/5 backdrop-blur-sm shadow-inner">
-                    <span className="text-xs text-slate-700 dark:text-slate-300 drop-shadow-sm">{schema.label}</span>
+                    <div className="flex flex-col">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 drop-shadow-sm">{schema.label}</span>
+                        {value === undefined && (
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">
+                                Default: {schema.default ? 'true' : 'false'}
+                            </span>
+                        )}
+                    </div>
                     <label className="relative cursor-pointer">
                         <input
                             type="checkbox"
-                            checked={value ?? schema.default}
+                            checked={value ?? false}
                             onChange={(e) => onChange(e.target.checked)}
                             className="sr-only peer"
                         />
@@ -253,9 +264,10 @@ function PropField({
                     <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block drop-shadow-sm">{schema.label}</label>
                     <input
                         type="number"
-                        value={value ?? schema.default}
-                        onChange={(e) => onChange(Number(e.target.value))}
-                        className={baseInputClass}
+                        value={value ?? ''}
+                        onChange={(e) => onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                        placeholder={`Ej: ${schema.default}`}
+                        className={`${baseInputClass} placeholder:italic`}
                     />
                 </div>
             )

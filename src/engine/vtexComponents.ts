@@ -18,6 +18,7 @@ import {
     richText,
     stackLayout,
     stickyLayout,
+    sliderLayout,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -31,6 +32,7 @@ const vtexComponents: VtexComponentDefinition[] = [
     stackLayout,
     stickyLayout,
     blockReference,
+    sliderLayout,
 ]
 
 export default vtexComponents
