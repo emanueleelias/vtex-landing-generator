@@ -54,26 +54,40 @@ export default function PropertiesPanel() {
                             Bloque destino
                         </label>
 
-                        {blockKeys.length > 0 ? (
-                            <select
-                                value={currentTarget}
-                                onChange={(e) => handlePropChange('__targetKey', e.target.value)}
-                                className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
-                                    text-slate-900 dark:text-white focus:border-cyan-500/50 focus:bg-cyan-500/5
-                                    focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner"
-                            >
-                                <option value="" className="dark:bg-slate-800 dark:text-slate-200">— Seleccioná un bloque —</option>
-                                {blockKeys.map((key) => (
-                                    <option key={key} value={key} className="dark:bg-slate-800 dark:text-slate-200">
-                                        {key}
-                                    </option>
-                                ))}
-                            </select>
-                        ) : (
-                            <p className="text-xs text-slate-400 italic">
-                                No hay bloques disponibles. Agregá componentes al canvas primero.
-                            </p>
-                        )}
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-[10px] text-slate-500 font-semibold mb-1 block">Ingresar manualmente</label>
+                                <input
+                                    type="text"
+                                    value={currentTarget}
+                                    onChange={(e) => handlePropChange('__targetKey', e.target.value)}
+                                    placeholder="Ej: product-summary.shelf#main"
+                                    className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                                        text-slate-900 dark:text-white placeholder-slate-400 focus:border-cyan-500/50 focus:bg-cyan-500/5
+                                        focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner font-mono text-xs"
+                                />
+                            </div>
+
+                            {blockKeys.length > 0 && (
+                                <div>
+                                    <label className="text-[10px] text-slate-500 font-semibold mb-1 block">O seleccionar del canvas</label>
+                                    <select
+                                        value={blockKeys.includes(currentTarget) ? currentTarget : ''}
+                                        onChange={(e) => handlePropChange('__targetKey', e.target.value)}
+                                        className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                                            text-slate-900 dark:text-white focus:border-cyan-500/50 focus:bg-cyan-500/5
+                                            focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner"
+                                    >
+                                        <option value="" className="dark:bg-slate-800 dark:text-slate-200">— Seleccioná un bloque —</option>
+                                        {blockKeys.map((key) => (
+                                            <option key={key} value={key} className="dark:bg-slate-800 dark:text-slate-200">
+                                                {key}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {currentTarget && (
