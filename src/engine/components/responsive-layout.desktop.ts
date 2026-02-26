@@ -6,7 +6,5 @@ export const responsiveLayoutDesktop: VtexComponentDefinition = {
     icon: 'Monitor',
     category: 'layout',
     acceptsChildren: true,
-    propsSchema: [
-        { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },
-    ],
+    propsSchema: [],
 }

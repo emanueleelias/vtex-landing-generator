@@ -6,7 +6,5 @@ export const responsiveLayoutMobile: VtexComponentDefinition = {
     icon: 'Smartphone',
     category: 'layout',
     acceptsChildren: true,
-    propsSchema: [
-        { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },
-    ],
+    propsSchema: [],
 }

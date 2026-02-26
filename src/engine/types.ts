@@ -28,6 +28,7 @@ export interface TreeNode {
   id: string
   type: string
   identifier: string
+  title?: string
   props: Record<string, any>
   children: TreeNode[]
 }

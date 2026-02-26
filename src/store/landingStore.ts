@@ -187,6 +187,8 @@ const useLandingStore = create<LandingState>((set, get) => ({
   addNode: (parentId, componentType) => {
     const { landingName } = get()
     const newNode = createNode(componentType, landingName)
+    // Add the __title property to the new node's props
+    newNode.props.__title = ''
 
     if (parentId === null) {
       set((state) => ({

@@ -66,27 +66,24 @@ export default function PropertiesPanel() {
                     />
                 </div>
 
-                {/* Title para custom-container */}
-                {node.type === 'custom-container' && (
-                    <>
-                        <div className="h-px bg-black/10 dark:bg-white/5" />
-                        <div className="space-y-3">
-                            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
-                                <Tag size={12} />
-                                Título del contenedor
-                            </label>
-                            <input
-                                type="text"
-                                value={node.props.__title || ''}
-                                onChange={(e) => updateNodeTitle(node.id, e.target.value)}
-                                placeholder={`ON/OFF ${node.identifier.toUpperCase()}`}
-                                className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                <div className="h-px bg-black/10 dark:bg-white/5" />
+
+                {/* Global Title */}
+                <div className="space-y-3">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
+                        <Tag size={12} />
+                        Título (Site Editor)
+                    </label>
+                    <input
+                        type="text"
+                        value={node.title || ''}
+                        onChange={(e) => updateNodeTitle(node.id, e.target.value)}
+                        placeholder="Nombre a mostrar en Site Editor"
+                        className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
                   text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500/50 focus:bg-emerald-500/5
                   focus:ring-1 focus:ring-emerald-500/30 transition-all backdrop-blur-sm shadow-inner"
-                            />
-                        </div>
-                    </>
-                )}
+                    />
+                </div>
 
                 {/* Divider */}
                 <div className="h-px bg-black/10 dark:bg-white/5" />

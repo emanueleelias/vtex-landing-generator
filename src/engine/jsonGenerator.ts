@@ -36,9 +36,9 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
       entry.children = node.children.map((child) => nodeKey(child))
     }
 
-    // Title para custom-container
-    if (node.type === 'custom-container' && node.props.__title) {
-      entry.title = node.props.__title
+    // Global Title
+    if (node.title) {
+      entry.title = node.title
     }
 
     const cleaned = cleanProps(node.props)

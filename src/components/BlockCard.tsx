@@ -91,8 +91,13 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
                             {definition?.label || node.type}
+                            {node.title && (
+                                <span className="text-xs font-normal text-slate-500 italic opacity-80 truncate max-w-[120px]">
+                                    "{node.title}"
+                                </span>
+                            )}
                         </p>
                         {acceptsChildren && (
                             <span className={`inline-flex items-center text-[9px] font-semibold px-1.5 py-px rounded-full ${colors.badge}`}>

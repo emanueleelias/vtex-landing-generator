@@ -11,9 +11,9 @@ export const image: VtexComponentDefinition = {
         { name: 'alt', type: 'string', label: 'Alt Text', default: '' },
         { name: 'maxHeight', type: 'string', label: 'Max Height', default: '' },
         { name: 'maxWidth', type: 'string', label: 'Max Width', default: '' },
-        { name: 'sizes', type: 'string', label: 'Sizes', default: '' },
-        { name: 'src', type: 'string', label: 'Source (src)', default: '' },
-        { name: 'srcSet', type: 'string', label: 'Source Set (srcSet)', default: '' },
+        // { name: 'sizes', type: 'string', label: 'Sizes', default: '' },
+        { name: 'src', type: 'string', label: 'Source (src)', default: 'https://dummyimage.com/360x360/D9D9D9/4c4c4c' },
+        // { name: 'srcSet', type: 'string', label: 'Source Set (srcSet)', default: '' },
         { name: 'title', type: 'string', label: 'Title', default: '' },
         {
             name: 'link',
