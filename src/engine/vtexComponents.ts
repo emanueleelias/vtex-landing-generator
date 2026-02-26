@@ -16,6 +16,8 @@ import {
     responsiveLayoutDesktop,
     responsiveLayoutMobile,
     richText,
+    stackLayout,
+    stickyLayout,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -26,6 +28,8 @@ const vtexComponents: VtexComponentDefinition[] = [
     customContainer,
     richText,
     image,
+    stackLayout,
+    stickyLayout,
     blockReference,
 ]
 
