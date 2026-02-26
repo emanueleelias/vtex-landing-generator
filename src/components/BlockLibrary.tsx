@@ -17,6 +17,9 @@ import {
   Link2,
   SquareStack,
   Anchor,
+  ListTree,
+  Package,
+  GalleryHorizontalEnd,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -32,6 +35,9 @@ const iconMap: Record<string, React.ElementType> = {
   Link2,
   SquareStack,
   Anchor,
+  ListTree,
+  Package,
+  GalleryHorizontalEnd,
 }
 
 const categoryLabels: Record<string, string> = {
