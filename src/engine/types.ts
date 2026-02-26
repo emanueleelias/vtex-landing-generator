@@ -6,10 +6,11 @@
 
 export interface PropSchema {
   name: string
-  type: 'string' | 'enum' | 'boolean' | 'number'
+  type: 'string' | 'enum' | 'boolean' | 'number' | 'object'
   label: string
-  default: string | boolean | number
+  default: string | boolean | number | Record<string, any>
   options?: { value: string; label: string }[]
+  objectSchema?: PropSchema[]
 }
 
 export interface VtexComponentDefinition {

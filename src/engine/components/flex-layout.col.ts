@@ -8,10 +8,13 @@ export const flexLayoutCol: VtexComponentDefinition = {
     acceptsChildren: true,
     propsSchema: [
         { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },
+        { name: 'borderColor', type: 'string', label: 'Border Color', default: '' },
+        { name: 'borderWidth', type: 'number', label: 'Border Width (0-5)', default: 0 },
+        { name: 'border', type: 'string', label: 'Border (top, right, bottom, left, all)', default: '' },
         {
             name: 'horizontalAlign',
             type: 'enum',
-            label: 'Alineación horizontal',
+            label: 'Horizontal Align',
             default: 'left',
             options: [
                 { value: 'left', label: 'Left' },
@@ -19,10 +22,16 @@ export const flexLayoutCol: VtexComponentDefinition = {
                 { value: 'right', label: 'Right' },
             ],
         },
+        { name: 'marginLeft', type: 'number', label: 'Margin Left (0-10)', default: 0 },
+        { name: 'marginRight', type: 'number', label: 'Margin Right (0-10)', default: 0 },
+        { name: 'paddingLeft', type: 'number', label: 'Padding Left (0-10)', default: 0 },
+        { name: 'paddingRight', type: 'number', label: 'Padding Right (0-10)', default: 0 },
+        { name: 'preventVerticalStretch', type: 'boolean', label: 'Prevent Vertical Stretch', default: false },
+        { name: 'rowGap', type: 'number', label: 'Row Gap (0-10)', default: 0 },
         {
             name: 'verticalAlign',
             type: 'enum',
-            label: 'Alineación vertical',
+            label: 'Vertical Align',
             default: 'top',
             options: [
                 { value: 'top', label: 'Top' },
@@ -30,9 +39,7 @@ export const flexLayoutCol: VtexComponentDefinition = {
                 { value: 'bottom', label: 'Bottom' },
             ],
         },
-        { name: 'preventVerticalStretch', type: 'boolean', label: 'Prevent Vertical Stretch', default: false },
-        { name: 'rowGap', type: 'number', label: 'Row Gap', default: 0 },
-        { name: 'paddingTop', type: 'number', label: 'Padding Top (0-10)', default: 0 },
-        { name: 'paddingBottom', type: 'number', label: 'Padding Bottom (0-10)', default: 0 },
+        { name: 'width', type: 'string', label: 'Width (e.g. 50%, grow, 100%)', default: '' },
+        { name: 'arialabel', type: 'string', label: 'Aria Label', default: '' },
     ],
 }

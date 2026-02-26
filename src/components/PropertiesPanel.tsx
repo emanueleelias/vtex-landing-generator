@@ -210,6 +210,26 @@ function PropField({
                 </div>
             )
 
+        case 'object':
+            return (
+                <div className="space-y-3 p-3 border border-black/5 dark:border-white/10 rounded-xl bg-white/30 dark:bg-black/10 backdrop-blur-sm shadow-inner">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider drop-shadow-sm block border-b border-black/5 dark:border-white/5 pb-2 mb-3">
+                        {schema.label}
+                    </label>
+                    {schema.objectSchema?.map((subSchema) => (
+                        <PropField
+                            key={subSchema.name}
+                            schema={subSchema}
+                            value={value?.[subSchema.name]}
+                            onChange={(subVal) => {
+                                const newValue = { ...(value || {}), [subSchema.name]: subVal }
+                                onChange(newValue)
+                            }}
+                        />
+                    ))}
+                </div>
+            )
+
         default:
             return null
     }
