@@ -15,7 +15,6 @@ interface LandingState {
   updateNodeProps: (nodeId: string, props: Record<string, any>) => void
   updateNodeIdentifier: (nodeId: string, identifier: string) => void
   updateNodeTitle: (nodeId: string, title: string) => void
-  duplicateNode: (nodeId: string) => void
   getSelectedNode: () => TreeNode | null
 
   // DnD actions
@@ -86,27 +85,7 @@ function moveInTree(tree: TreeNode[], id: string, direction: number): TreeNode[]
   }))
 }
 
-function deepCloneNode(node: TreeNode): TreeNode {
-  return {
-    ...node,
-    id: generateNodeId(),
-    props: { ...node.props },
-    children: node.children.map(deepCloneNode),
-  }
-}
 
-function insertAfterInTree(tree: TreeNode[], afterId: string, newNode: TreeNode): TreeNode[] {
-  const index = tree.findIndex((n) => n.id === afterId)
-  if (index !== -1) {
-    const copy = [...tree]
-    copy.splice(index + 1, 0, newNode)
-    return copy
-  }
-  return tree.map((node) => ({
-    ...node,
-    children: insertAfterInTree(node.children, afterId, newNode),
-  }))
-}
 
 function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode): TreeNode[] {
   if (parentId === null) {
@@ -259,17 +238,6 @@ const useLandingStore = create<LandingState>((set, get) => ({
     }))
   },
 
-  duplicateNode: (nodeId) => {
-    const { tree } = get()
-    const original = findNode(tree, nodeId)
-    if (!original) return
-
-    const cloned = deepCloneNode(original)
-    set((state) => ({
-      tree: insertAfterInTree(state.tree, nodeId, cloned),
-      selectedNodeId: cloned.id,
-    }))
-  },
 
   getSelectedNode: () => {
     const { selectedNodeId, tree } = get()

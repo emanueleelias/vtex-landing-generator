@@ -12,7 +12,6 @@ import {
     ChevronUp,
     ChevronDown,
     Trash2,
-    Copy,
     GripVertical,
     ChevronRight,
     ChevronDown as ChevronExpand,
@@ -30,7 +29,6 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
     const selectNode = useLandingStore((s) => s.selectNode)
     const removeNode = useLandingStore((s) => s.removeNode)
     const moveNode = useLandingStore((s) => s.moveNode)
-    const duplicateNode = useLandingStore((s) => s.duplicateNode)
 
     const [collapsed, setCollapsed] = useState(false)
 
@@ -132,16 +130,6 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                         title="Mover abajo"
                     >
                         <ChevronDown size={13} />
-                    </button>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            duplicateNode(node.id)
-                        }}
-                        className="p-1 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
-                        title="Duplicar"
-                    >
-                        <Copy size={13} />
                     </button>
                     <button
                         onClick={(e) => {
