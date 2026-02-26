@@ -1,0 +1,32 @@
+/**
+ * Tipos centrales del sistema compositivo de componentes VTEX.
+ */
+
+// --- Registro de componentes ---
+
+export interface PropSchema {
+  name: string
+  type: 'string' | 'enum' | 'boolean' | 'number'
+  label: string
+  default: string | boolean | number
+  options?: { value: string; label: string }[]
+}
+
+export interface VtexComponentDefinition {
+  type: string
+  label: string
+  icon: string
+  category: 'layout' | 'content' | 'media'
+  acceptsChildren: boolean
+  propsSchema: PropSchema[]
+}
+
+// --- Árbol de nodos ---
+
+export interface TreeNode {
+  id: string
+  type: string
+  identifier: string
+  props: Record<string, any>
+  children: TreeNode[]
+}

@@ -1,68 +1,155 @@
 import { create } from 'zustand'
-
-export const TABS = {
-  DESKTOP: 'desktop',
-  MOBILE: 'mobile',
-} as const
-
-export type TabKey = typeof TABS[keyof typeof TABS]
-
-export interface BlockProps {
-  title?: string
-  subtitle?: string
-  text?: string
-  img1?: string
-  img2?: string
-  link?: string
-}
-
-export interface Block {
-  id: string
-  type: string
-  props: BlockProps
-  useContainer: boolean
-  containerTitle: string
-}
+import type { TreeNode } from '../engine/types'
+import { getComponentDefinition } from '../engine/vtexComponents'
 
 interface LandingState {
   landingName: string
-  desktopBlocks: Block[]
-  mobileBlocks: Block[]
-  selectedBlockId: string | null
-  selectedTab: TabKey
+  tree: TreeNode[]
+  selectedNodeId: string | null
 
   setLandingName: (name: string) => void
-  setTab: (tab: TabKey) => void
-  selectBlock: (blockId: string) => void
-  addBlock: (blockType: string, defaultProps: BlockProps) => void
-  removeBlock: (blockId: string) => void
-  moveBlock: (blockId: string, direction: number) => void
-  updateBlockProps: (blockId: string, newProps: Partial<BlockProps>) => void
-  toggleContainer: (blockId: string) => void
-  setContainerTitle: (blockId: string, title: string) => void
-  duplicateBlock: (blockId: string) => void
-  getSelectedBlock: () => Block | null
+  selectNode: (nodeId: string | null) => void
+  addNode: (parentId: string | null, componentType: string) => void
+  removeNode: (nodeId: string) => void
+  moveNode: (nodeId: string, direction: number) => void
+  updateNodeProps: (nodeId: string, props: Record<string, any>) => void
+  updateNodeIdentifier: (nodeId: string, identifier: string) => void
+  updateNodeTitle: (nodeId: string, title: string) => void
+  getSelectedNode: () => TreeNode | null
+
+  // DnD actions
+  insertNodeAtIndex: (parentId: string | null, index: number, componentType: string) => void
+  moveNodeTo: (nodeId: string, newParentId: string | null, index: number) => void
 }
 
-let blockCounter = 0
+// --- Utilidades para operar sobre el árbol ---
 
-function generateBlockId() {
-  blockCounter++
-  return `block-${Date.now()}-${blockCounter}`
+let nodeCounter = 0
+
+function generateNodeId(): string {
+  nodeCounter++
+  return `node-${Date.now()}-${nodeCounter}`
 }
+
+function findNode(tree: TreeNode[], id: string): TreeNode | null {
+  for (const node of tree) {
+    if (node.id === id) return node
+    const found = findNode(node.children, id)
+    if (found) return found
+  }
+  return null
+}
+
+function removeFromTree(tree: TreeNode[], id: string): TreeNode[] {
+  return tree
+    .filter((node) => node.id !== id)
+    .map((node) => ({
+      ...node,
+      children: removeFromTree(node.children, id),
+    }))
+}
+
+function insertIntoParent(tree: TreeNode[], parentId: string, newNode: TreeNode): TreeNode[] {
+  return tree.map((node) => {
+    if (node.id === parentId) {
+      return { ...node, children: [...node.children, newNode] }
+    }
+    return { ...node, children: insertIntoParent(node.children, parentId, newNode) }
+  })
+}
+
+function updateInTree(tree: TreeNode[], id: string, updater: (node: TreeNode) => TreeNode): TreeNode[] {
+  return tree.map((node) => {
+    if (node.id === id) return updater(node)
+    return { ...node, children: updateInTree(node.children, id, updater) }
+  })
+}
+
+function moveSibling(siblings: TreeNode[], id: string, direction: number): TreeNode[] {
+  const index = siblings.findIndex((n) => n.id === id)
+  if (index === -1) return siblings
+  const newIndex = index + direction
+  if (newIndex < 0 || newIndex >= siblings.length) return siblings
+  const copy = [...siblings]
+    ;[copy[index], copy[newIndex]] = [copy[newIndex], copy[index]]
+  return copy
+}
+
+function moveInTree(tree: TreeNode[], id: string, direction: number): TreeNode[] {
+  if (tree.some((n) => n.id === id)) {
+    return moveSibling(tree, id, direction)
+  }
+  return tree.map((node) => ({
+    ...node,
+    children: moveInTree(node.children, id, direction),
+  }))
+}
+
+
+
+function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode): TreeNode[] {
+  if (parentId === null) {
+    const copy = [...tree]
+    copy.splice(index, 0, node)
+    return copy
+  }
+  return tree.map((n) => {
+    if (n.id === parentId) {
+      const copy = [...n.children]
+      copy.splice(index, 0, node)
+      return { ...n, children: copy }
+    }
+    return { ...n, children: insertNodeAt(n.children, parentId, index, node) }
+  })
+}
+
+function removeAndGetNode(tree: TreeNode[], id: string): { newTree: TreeNode[], node: TreeNode | null } {
+  let foundNode: TreeNode | null = null
+  const newTree = tree
+    .filter((n) => {
+      if (n.id === id) {
+        foundNode = n
+        return false
+      }
+      return true
+    })
+    .map((n) => {
+      const { newTree: children, node } = removeAndGetNode(n.children, id)
+      if (node) foundNode = node
+      return { ...n, children }
+    })
+  return { newTree, node: foundNode }
+}
+
+function createNode(componentType: string, landingName: string): TreeNode {
+  const definition = getComponentDefinition(componentType)
+  const defaultProps: Record<string, any> = {}
+
+  if (definition) {
+    definition.propsSchema.forEach((prop) => {
+      defaultProps[prop.name] = prop.default
+    })
+  }
+
+  const id = generateNodeId()
+
+  return {
+    id,
+    type: componentType,
+    identifier: landingName,
+    props: defaultProps,
+    children: [],
+  }
+}
+
+// --- Store ---
 
 const useLandingStore = create<LandingState>((set, get) => ({
-  // Estado
   landingName: 'mi-landing',
-  desktopBlocks: [],
-  mobileBlocks: [],
-  selectedBlockId: null,
-  selectedTab: TABS.DESKTOP,
-
-  // --- Acciones ---
+  tree: [],
+  selectedNodeId: null,
 
   setLandingName: (name) => {
-    // Slugificar el nombre
     const slug = name
       .toLowerCase()
       .replace(/[^a-z0-9-\s]/g, '')
@@ -72,125 +159,89 @@ const useLandingStore = create<LandingState>((set, get) => ({
     set({ landingName: slug || 'mi-landing' })
   },
 
-  setTab: (tab) => set({ selectedTab: tab, selectedBlockId: null }),
+  selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
-  selectBlock: (blockId) => set({ selectedBlockId: blockId }),
+  insertNodeAtIndex: (parentId, index, componentType) => {
+    const { landingName } = get()
+    const newNode = createNode(componentType, landingName)
+    set((state) => ({
+      tree: insertNodeAt(state.tree, parentId, index, newNode),
+      selectedNodeId: newNode.id,
+    }))
+  },
 
-  addBlock: (blockType, defaultProps) => {
-    const { selectedTab } = get()
-    const newBlock: Block = {
-      id: generateBlockId(),
-      type: blockType,
-      props: { ...defaultProps },
-      useContainer: true,
-      containerTitle: '',
-    }
+  moveNodeTo: (nodeId, newParentId, index) => {
+    set((state) => {
+      const { newTree, node } = removeAndGetNode(state.tree, nodeId)
+      if (!node) return state
+      return {
+        tree: insertNodeAt(newTree, newParentId, index, node),
+      }
+    })
+  },
 
-    if (selectedTab === TABS.DESKTOP) {
+  addNode: (parentId, componentType) => {
+    const { landingName } = get()
+    const newNode = createNode(componentType, landingName)
+
+    if (parentId === null) {
       set((state) => ({
-        desktopBlocks: [...state.desktopBlocks, newBlock],
-        selectedBlockId: newBlock.id,
+        tree: [...state.tree, newNode],
+        selectedNodeId: newNode.id,
       }))
     } else {
       set((state) => ({
-        mobileBlocks: [...state.mobileBlocks, newBlock],
-        selectedBlockId: newBlock.id,
+        tree: insertIntoParent(state.tree, parentId, newNode),
+        selectedNodeId: newNode.id,
       }))
     }
   },
 
-  removeBlock: (blockId) => {
+  removeNode: (nodeId) => {
     set((state) => ({
-      desktopBlocks: state.desktopBlocks.filter((b) => b.id !== blockId),
-      mobileBlocks: state.mobileBlocks.filter((b) => b.id !== blockId),
-      selectedBlockId:
-        state.selectedBlockId === blockId ? null : state.selectedBlockId,
+      tree: removeFromTree(state.tree, nodeId),
+      selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
     }))
   },
 
-  moveBlock: (blockId, direction) => {
-    const { selectedTab } = get()
-    const key = selectedTab === TABS.DESKTOP ? 'desktopBlocks' : 'mobileBlocks'
+  moveNode: (nodeId, direction) => {
+    set((state) => ({
+      tree: moveInTree(state.tree, nodeId, direction),
+    }))
+  },
 
-    set((state) => {
-      const blocks = [...state[key]]
-      const index = blocks.findIndex((b) => b.id === blockId)
-      if (index === -1) return state
-
-      const newIndex = index + direction
-      if (newIndex < 0 || newIndex >= blocks.length) return state
-
-        // Swap
-        ;[blocks[index], blocks[newIndex]] = [blocks[newIndex], blocks[index]]
-      return { [key]: blocks }
+  updateNodeProps: (nodeId, newProps) => {
+    const updater = (node: TreeNode): TreeNode => ({
+      ...node,
+      props: { ...node.props, ...newProps },
     })
-  },
-
-  updateBlockProps: (blockId, newProps) => {
     set((state) => ({
-      desktopBlocks: state.desktopBlocks.map((b) =>
-        b.id === blockId ? { ...b, props: { ...b.props, ...newProps } } : b
-      ),
-      mobileBlocks: state.mobileBlocks.map((b) =>
-        b.id === blockId ? { ...b, props: { ...b.props, ...newProps } } : b
-      ),
+      tree: updateInTree(state.tree, nodeId, updater),
     }))
   },
 
-  toggleContainer: (blockId) => {
+  updateNodeIdentifier: (nodeId, identifier) => {
+    const updater = (node: TreeNode): TreeNode => ({ ...node, identifier })
     set((state) => ({
-      desktopBlocks: state.desktopBlocks.map((b) =>
-        b.id === blockId ? { ...b, useContainer: !b.useContainer } : b
-      ),
-      mobileBlocks: state.mobileBlocks.map((b) =>
-        b.id === blockId ? { ...b, useContainer: !b.useContainer } : b
-      ),
+      tree: updateInTree(state.tree, nodeId, updater),
     }))
   },
 
-  setContainerTitle: (blockId, title) => {
-    set((state) => ({
-      desktopBlocks: state.desktopBlocks.map((b) =>
-        b.id === blockId ? { ...b, containerTitle: title } : b
-      ),
-      mobileBlocks: state.mobileBlocks.map((b) =>
-        b.id === blockId ? { ...b, containerTitle: title } : b
-      ),
-    }))
-  },
-
-  // Duplicar un bloque
-  duplicateBlock: (blockId) => {
-    const { selectedTab, desktopBlocks, mobileBlocks } = get()
-    const blocks = selectedTab === TABS.DESKTOP ? desktopBlocks : mobileBlocks
-    const block = blocks.find((b) => b.id === blockId)
-    if (!block) return
-
-    const newBlock: Block = {
-      ...block,
-      id: generateBlockId(),
-      props: { ...block.props },
-    }
-
-    const key = selectedTab === TABS.DESKTOP ? 'desktopBlocks' : 'mobileBlocks'
-    const index = blocks.findIndex((b) => b.id === blockId)
-
-    set((state) => {
-      const updated = [...state[key]]
-      updated.splice(index + 1, 0, newBlock)
-      return { [key]: updated, selectedBlockId: newBlock.id }
+  updateNodeTitle: (nodeId, title) => {
+    const updater = (node: TreeNode): TreeNode => ({
+      ...node,
+      props: { ...node.props, __title: title },
     })
+    set((state) => ({
+      tree: updateInTree(state.tree, nodeId, updater),
+    }))
   },
 
-  // Obtener el bloque seleccionado
-  getSelectedBlock: () => {
-    const { selectedBlockId, desktopBlocks, mobileBlocks } = get()
-    if (!selectedBlockId) return null
-    return (
-      desktopBlocks.find((b) => b.id === selectedBlockId) ||
-      mobileBlocks.find((b) => b.id === selectedBlockId) ||
-      null
-    )
+
+  getSelectedNode: () => {
+    const { selectedNodeId, tree } = get()
+    if (!selectedNodeId) return null
+    return findNode(tree, selectedNodeId)
   },
 }))
 
