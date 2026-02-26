@@ -27,6 +27,7 @@ interface LandingState {
   moveNodeTo: (nodeId: string, newParentId: string | null, index: number) => void
 
   toggleTheme: () => void
+  getAllBlockKeys: () => string[]
 }
 
 // --- Utilidades para operar sobre el árbol ---
@@ -259,7 +260,22 @@ const useLandingStore = create<LandingState>((set, get) => ({
 
   toggleTheme: () => {
     set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' }))
-  }
+  },
+
+  getAllBlockKeys: () => {
+    const { tree } = get()
+    const keys: string[] = []
+    function collect(nodes: TreeNode[]) {
+      for (const node of nodes) {
+        if (node.type !== '__block-reference') {
+          keys.push(`${node.type}#${node.identifier}`)
+        }
+        collect(node.children)
+      }
+    }
+    collect(tree)
+    return keys
+  },
 }))
 
 export default useLandingStore

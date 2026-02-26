@@ -17,7 +17,7 @@ export interface VtexComponentDefinition {
   type: string
   label: string
   icon: string
-  category: 'layout' | 'content' | 'media'
+  category: 'layout' | 'content' | 'media' | 'utility'
   acceptsChildren: boolean
   propsSchema: PropSchema[]
 }

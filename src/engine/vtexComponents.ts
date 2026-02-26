@@ -8,6 +8,7 @@
  */
 import type { VtexComponentDefinition } from './types'
 import {
+    blockReference,
     customContainer,
     flexLayoutCol,
     flexLayoutRow,
@@ -25,6 +26,7 @@ const vtexComponents: VtexComponentDefinition[] = [
     customContainer,
     richText,
     image,
+    blockReference,
 ]
 
 export default vtexComponents
@@ -44,6 +46,7 @@ export function getComponentsByCategory() {
         layout: [],
         content: [],
         media: [],
+        utility: [],
     }
     vtexComponents.forEach((c) => {
         if (!grouped[c.category]) {

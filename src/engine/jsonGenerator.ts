@@ -48,11 +48,20 @@ function cleanProps(props: Record<string, any>, nodeType: string): Record<string
  */
 function processTree(nodes: TreeNode[], output: Record<string, any>): void {
   for (const node of nodes) {
+    // Los nodos de referencia no generan su propio bloque
+    if (node.type === '__block-reference') continue
+
     const key = nodeKey(node)
     const entry: Record<string, any> = {}
 
     if (node.children.length > 0) {
-      entry.children = node.children.map((child) => nodeKey(child))
+      entry.children = node.children.map((child) => {
+        // Si el hijo es una referencia, usar su targetKey directamente
+        if (child.type === '__block-reference' && child.props.__targetKey) {
+          return child.props.__targetKey
+        }
+        return nodeKey(child)
+      })
     }
 
     // Global Title
@@ -67,7 +76,7 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
 
     output[key] = entry
 
-    // Recursión a children
+    // Recursión a children (excluye referencias, ya se saltean arriba)
     processTree(node.children, output)
   }
 }

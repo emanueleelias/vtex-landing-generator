@@ -1,16 +1,13 @@
-/**
- * Panel derecho: propiedades del nodo seleccionado.
- * Genera los campos dinámicamente a partir del propsSchema del componente.
- */
 import useLandingStore from '../store/landingStore'
 import { getComponentDefinition } from '../engine/vtexComponents'
 import type { PropSchema } from '../engine/types'
-import { Settings, Hash, Tag } from 'lucide-react'
+import { Settings, Hash, Tag, Link2 } from 'lucide-react'
 
 export default function PropertiesPanel() {
     const updateNodeProps = useLandingStore((s) => s.updateNodeProps)
     const updateNodeIdentifier = useLandingStore((s) => s.updateNodeIdentifier)
     const updateNodeTitle = useLandingStore((s) => s.updateNodeTitle)
+    const getAllBlockKeys = useLandingStore((s) => s.getAllBlockKeys)
 
     // Subscribimos el componente al resultado de getSelectedNode() para que 
     // re-renderice al modificar props o el identifier.
@@ -29,9 +26,65 @@ export default function PropertiesPanel() {
     }
 
     const definition = getComponentDefinition(node.type)
+    const isBlockReference = node.type === '__block-reference'
 
     const handlePropChange = (propName: string, value: any) => {
         updateNodeProps(node.id, { [propName]: value })
+    }
+
+    // Para nodos de referencia, mostrar UI especial
+    if (isBlockReference) {
+        const blockKeys = getAllBlockKeys()
+        const currentTarget = node.props.__targetKey || ''
+        return (
+            <div className="flex flex-col h-full relative z-10">
+                <div className="px-4 py-3 border-b border-black/5 dark:border-white/10">
+                    <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider drop-shadow-sm">
+                        Referencia a Bloque
+                    </h2>
+                    <p className="text-xs text-cyan-600 dark:text-cyan-400 mt-0.5 font-medium drop-shadow-sm">
+                        Apunta a un bloque existente
+                    </p>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-5">
+                    <div className="space-y-3">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
+                            <Link2 size={12} />
+                            Bloque destino
+                        </label>
+
+                        {blockKeys.length > 0 ? (
+                            <select
+                                value={currentTarget}
+                                onChange={(e) => handlePropChange('__targetKey', e.target.value)}
+                                className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                                    text-slate-900 dark:text-white focus:border-cyan-500/50 focus:bg-cyan-500/5
+                                    focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner"
+                            >
+                                <option value="">— Seleccioná un bloque —</option>
+                                {blockKeys.map((key) => (
+                                    <option key={key} value={key}>
+                                        {key}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <p className="text-xs text-slate-400 italic">
+                                No hay bloques disponibles. Agregá componentes al canvas primero.
+                            </p>
+                        )}
+                    </div>
+
+                    {currentTarget && (
+                        <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-700 dark:text-cyan-300">
+                            <p className="font-semibold mb-1">Vista previa del children:</p>
+                            <code className="font-mono text-[11px]">"{currentTarget}"</code>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
     }
 
     return (

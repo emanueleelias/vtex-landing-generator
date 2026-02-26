@@ -15,6 +15,7 @@ import {
     GripVertical,
     ChevronRight,
     ChevronDown as ChevronExpand,
+    Link2,
 } from 'lucide-react'
 
 interface NodeCardProps {
@@ -47,6 +48,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
         layout: { border: 'border-blue-500/30', bg: 'bg-blue-500/10', badge: 'bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30' },
         content: { border: 'border-amber-500/30', bg: 'bg-amber-500/10', badge: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' },
         media: { border: 'border-purple-500/30', bg: 'bg-purple-500/10', badge: 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30' },
+        utility: { border: 'border-cyan-500/30', bg: 'bg-cyan-500/10', badge: 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30' },
     }
 
     const category = definition?.category || 'layout'
@@ -92,11 +94,20 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
-                            {definition?.label || node.type}
-                            {node.title && (
-                                <span className="text-xs font-normal text-slate-500 italic opacity-80 truncate max-w-[120px]">
-                                    "{node.title}"
-                                </span>
+                            {node.type === '__block-reference' ? (
+                                <>
+                                    <Link2 size={14} className="text-cyan-500 flex-shrink-0" />
+                                    <span className="text-cyan-700 dark:text-cyan-300">REF</span>
+                                </>
+                            ) : (
+                                <>
+                                    {definition?.label || node.type}
+                                    {node.title && (
+                                        <span className="text-xs font-normal text-slate-500 italic opacity-80 truncate max-w-[120px]">
+                                            "{node.title}"
+                                        </span>
+                                    )}
+                                </>
                             )}
                         </p>
                         {acceptsChildren && (
@@ -106,7 +117,10 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                         )}
                     </div>
                     <p className="text-[10px] text-slate-500 font-mono truncate">
-                        #{node.identifier}
+                        {node.type === '__block-reference'
+                            ? (node.props.__targetKey || 'Sin bloque asignado')
+                            : `#${node.identifier}`
+                        }
                     </p>
                 </div>
 

@@ -14,6 +14,7 @@ import {
     Type,
     ImageIcon,
     Plus,
+    Link2,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -26,12 +27,14 @@ const iconMap: Record<string, React.ElementType> = {
     Box,
     Type,
     ImageIcon,
+    Link2,
 }
 
 const categoryLabels: Record<string, string> = {
     layout: '📐 Layout',
     content: '📝 Contenido',
     media: '🖼️ Media',
+    utility: '🔗 Utilidades',
 }
 
 function DraggableComponent({ definition, onAdd }: { definition: VtexComponentDefinition, onAdd: () => void }) {
