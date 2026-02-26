@@ -2,13 +2,17 @@ import { create } from 'zustand'
 import type { TreeNode } from '../engine/types'
 import { getComponentDefinition } from '../engine/vtexComponents'
 
+export type GenerationMode = 'landing' | 'block'
+
 interface LandingState {
   landingName: string
+  generationMode: GenerationMode
   tree: TreeNode[]
   selectedNodeId: string | null
   theme: 'dark' | 'light'
 
   setLandingName: (name: string) => void
+  setGenerationMode: (mode: GenerationMode) => void
   selectNode: (nodeId: string | null) => void
   addNode: (parentId: string | null, componentType: string) => void
   removeNode: (nodeId: string) => void
@@ -149,6 +153,7 @@ function createNode(componentType: string, landingName: string): TreeNode {
 
 const useLandingStore = create<LandingState>((set, get) => ({
   landingName: 'mi-landing',
+  generationMode: 'landing' as GenerationMode,
   tree: [],
   selectedNodeId: null,
   theme: 'dark',
@@ -162,6 +167,8 @@ const useLandingStore = create<LandingState>((set, get) => ({
       .trim()
     set({ landingName: slug || 'mi-landing' })
   },
+
+  setGenerationMode: (mode) => set({ generationMode: mode }),
 
   selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
@@ -236,7 +243,7 @@ const useLandingStore = create<LandingState>((set, get) => ({
   updateNodeTitle: (nodeId, title) => {
     const updater = (node: TreeNode): TreeNode => ({
       ...node,
-      props: { ...node.props, __title: title },
+      title, // Actualiza el campo title a nivel de nodo
     })
     set((state) => ({
       tree: updateInTree(state.tree, nodeId, updater),

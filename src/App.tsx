@@ -40,6 +40,8 @@ function DragOverlayCard({ activeData }: { activeData: any }) {
 export default function App() {
     const landingName = useLandingStore((s) => s.landingName)
     const setLandingName = useLandingStore((s) => s.setLandingName)
+    const generationMode = useLandingStore((s) => s.generationMode)
+    const setGenerationMode = useLandingStore((s) => s.setGenerationMode)
     const insertNodeAtIndex = useLandingStore((s) => s.insertNodeAtIndex)
     const moveNodeTo = useLandingStore((s) => s.moveNodeTo)
     const theme = useLandingStore((s) => s.theme)
@@ -116,15 +118,39 @@ export default function App() {
 
                         <div className="h-6 w-px bg-black/10 dark:bg-slate-700" />
 
+                        {/* Mode Toggle Pills */}
+                        <div className="flex items-center bg-white/40 dark:bg-black/20 rounded-xl p-0.5 border border-black/5 dark:border-white/10 backdrop-blur-sm shadow-inner">
+                            <button
+                                onClick={() => setGenerationMode('landing')}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'landing'
+                                        ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                                    }`}
+                            >
+                                Landing
+                            </button>
+                            <button
+                                onClick={() => setGenerationMode('block')}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'block'
+                                        ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                                    }`}
+                            >
+                                Bloque
+                            </button>
+                        </div>
+
+                        <div className="h-6 w-px bg-black/10 dark:bg-slate-700" />
+
                         <div className="flex items-center gap-2">
                             <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider drop-shadow-sm">
-                                Nombre:
+                                {generationMode === 'landing' ? 'Nombre:' : 'ID:'}
                             </label>
                             <input
                                 type="text"
                                 value={landingName}
                                 onChange={(e) => setLandingName(e.target.value)}
-                                placeholder="nombre-de-la-landing"
+                                placeholder={generationMode === 'landing' ? 'nombre-de-la-landing' : 'identificador-del-bloque'}
                                 className="bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white
              placeholder-slate-400 dark:placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5 focus:ring-1 focus:ring-pink-500/30
              transition-all w-64 backdrop-blur-sm shadow-inner"

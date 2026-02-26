@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import useLandingStore from '../store/landingStore'
-import { generateLandingJSON, serializeToJSONC } from '../engine/jsonGenerator'
+import { generateLandingJSON, generateBlockJSON, serializeToJSONC } from '../engine/jsonGenerator'
 import { Copy, AlertCircle, Clipboard } from 'lucide-react'
 
 export default function ExportButton() {
@@ -8,7 +8,7 @@ export default function ExportButton() {
 
     const handleExport = async () => {
         const state = useLandingStore.getState()
-        const { landingName, tree } = state
+        const { landingName, tree, generationMode } = state
 
         if (tree.length === 0) {
             setStatus('error')
@@ -17,8 +17,10 @@ export default function ExportButton() {
         }
 
         try {
-            const json = generateLandingJSON({ landingName, tree })
-            const content = serializeToJSONC(json, landingName)
+            const json = generationMode === 'landing'
+                ? generateLandingJSON({ landingName, tree })
+                : generateBlockJSON({ tree })
+            const content = serializeToJSONC(json, landingName, generationMode === 'block')
 
             await navigator.clipboard.writeText(content)
             setStatus('copied')
