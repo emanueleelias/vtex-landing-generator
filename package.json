@@ -1,6 +1,6 @@
 {
   "name": "vtex-landing-generator",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Generador visual de landings VTEX IO (.jsonc)",
   "type": "module",
   "author": "Emanuele, Elias Daniel",
