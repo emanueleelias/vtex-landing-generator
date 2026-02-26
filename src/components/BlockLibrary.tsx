@@ -16,6 +16,7 @@ import {
     Plus,
 } from 'lucide-react'
 import React from 'react'
+import { useDraggable } from '@dnd-kit/core'
 
 const iconMap: Record<string, React.ElementType> = {
     Rows3,
@@ -33,6 +34,52 @@ const categoryLabels: Record<string, string> = {
     media: '🖼️ Media',
 }
 
+function DraggableComponent({ definition, onAdd }: { definition: VtexComponentDefinition, onAdd: () => void }) {
+    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+        id: `new-${definition.type}`,
+        data: {
+            type: 'new-component',
+            componentType: definition.type,
+        },
+    })
+
+    const IconComponent = iconMap[definition.icon] || Box
+
+    return (
+        <button
+            ref={setNodeRef}
+            {...listeners}
+            {...attributes}
+            onClick={onAdd}
+            className={`w-full flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/50
+        hover:bg-slate-800 border border-slate-700/50 hover:border-pink-500/30
+        transition-all group cursor-grab active:cursor-grabbing text-left
+        ${isDragging ? 'opacity-50 ring-2 ring-pink-500' : ''}`}
+        >
+            <div className="w-9 h-9 rounded-lg bg-slate-700/50 group-hover:bg-pink-500/10
+        flex items-center justify-center flex-shrink-0 transition-colors"
+            >
+                <IconComponent
+                    size={18}
+                    className="text-slate-400 group-hover:text-pink-400 transition-colors"
+                />
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
+                    {definition.label}
+                </p>
+                <p className="text-[10px] text-slate-600 font-mono truncate">
+                    {definition.type}
+                </p>
+            </div>
+            <Plus
+                size={14}
+                className="text-slate-600 group-hover:text-pink-400 transition-colors flex-shrink-0"
+            />
+        </button>
+    )
+}
+
 export default function BlockLibrary() {
     const addNode = useLandingStore((s) => s.addNode)
     const selectedNodeId = useLandingStore((s) => s.selectedNodeId)
@@ -43,7 +90,6 @@ export default function BlockLibrary() {
     const handleAdd = (definition: VtexComponentDefinition) => {
         const selectedNode = getSelectedNode()
 
-        // Si hay un nodo seleccionado que acepta children, agregar como hijo
         if (selectedNode) {
             const selectedDef = getComponentsByCategory()
             const allComponents = Object.values(selectedDef).flat()
@@ -55,7 +101,6 @@ export default function BlockLibrary() {
             }
         }
 
-        // Si no, agregar como nodo raíz
         addNode(null, definition.type)
     }
 
@@ -66,11 +111,11 @@ export default function BlockLibrary() {
                     Componentes
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                    Click para agregar al canvas
+                    Click o arrastrar al canvas
                 </p>
                 {selectedNodeId && (
                     <p className="text-xs text-emerald-400 mt-1">
-                        ➤ Se insertará dentro del nodo seleccionado
+                        ➤ Clic insertará dentro del nodo
                     </p>
                 )}
             </div>
@@ -82,39 +127,13 @@ export default function BlockLibrary() {
                             {categoryLabels[category] || category}
                         </h3>
                         <div className="space-y-1.5">
-                            {components.map((definition) => {
-                                const IconComponent = iconMap[definition.icon] || Box
-                                return (
-                                    <button
-                                        key={definition.type}
-                                        onClick={() => handleAdd(definition)}
-                                        className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/50
-                      hover:bg-slate-800 border border-slate-700/50 hover:border-pink-500/30
-                      transition-all group cursor-pointer text-left"
-                                    >
-                                        <div className="w-9 h-9 rounded-lg bg-slate-700/50 group-hover:bg-pink-500/10
-                      flex items-center justify-center flex-shrink-0 transition-colors"
-                                        >
-                                            <IconComponent
-                                                size={18}
-                                                className="text-slate-400 group-hover:text-pink-400 transition-colors"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">
-                                                {definition.label}
-                                            </p>
-                                            <p className="text-[10px] text-slate-600 font-mono truncate">
-                                                {definition.type}
-                                            </p>
-                                        </div>
-                                        <Plus
-                                            size={14}
-                                            className="text-slate-600 group-hover:text-pink-400 transition-colors flex-shrink-0"
-                                        />
-                                    </button>
-                                )
-                            })}
+                            {components.map((definition) => (
+                                <DraggableComponent
+                                    key={definition.type}
+                                    definition={definition}
+                                    onAdd={() => handleAdd(definition)}
+                                />
+                            ))}
                         </div>
                     </div>
                 ))}

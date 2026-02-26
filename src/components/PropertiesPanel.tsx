@@ -4,13 +4,10 @@
  */
 import useLandingStore from '../store/landingStore'
 import { getComponentDefinition } from '../engine/vtexComponents'
-import type { PropSchema, TreeNode } from '../engine/types'
+import type { PropSchema } from '../engine/types'
 import { Settings, Hash, Tag } from 'lucide-react'
 
 export default function PropertiesPanel() {
-    const selectedNodeId = useLandingStore((s) => s.selectedNodeId)
-    const desktopTree = useLandingStore((s) => s.desktopTree)
-    const mobileTree = useLandingStore((s) => s.mobileTree)
     const updateNodeProps = useLandingStore((s) => s.updateNodeProps)
     const updateNodeIdentifier = useLandingStore((s) => s.updateNodeIdentifier)
     const updateNodeTitle = useLandingStore((s) => s.updateNodeTitle)

@@ -2,6 +2,9 @@
  * Tarjeta visual de un nodo en el árbol del canvas.
  * Muestra tipo, identifier, acciones y children anidados.
  */
+import { useDraggable } from '@dnd-kit/core'
+import DropZone from './DropZone'
+import React, { useState } from 'react'
 import useLandingStore from '../store/landingStore'
 import { getComponentDefinition } from '../engine/vtexComponents'
 import type { TreeNode } from '../engine/types'
@@ -14,16 +17,15 @@ import {
     ChevronRight,
     ChevronDown as ChevronExpand,
 } from 'lucide-react'
-import { useState } from 'react'
 
 interface NodeCardProps {
     node: TreeNode
     index: number
     total: number
-    depth: number
+    depth?: number
 }
 
-export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
+export default function NodeCard({ node, index, total }: NodeCardProps) {
     const selectedNodeId = useLandingStore((s) => s.selectedNodeId)
     const selectNode = useLandingStore((s) => s.selectNode)
     const removeNode = useLandingStore((s) => s.removeNode)
@@ -37,6 +39,11 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
     const hasChildren = node.children.length > 0
     const acceptsChildren = definition?.acceptsChildren ?? false
 
+    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+        id: `node-${node.id}`,
+        data: { type: 'existing-node', node },
+    })
+
     // Colores por categoría
     const categoryColors: Record<string, { border: string; bg: string; badge: string }> = {
         layout: { border: 'border-blue-500/50', bg: 'bg-blue-500/5', badge: 'bg-blue-500/15 text-blue-400' },
@@ -48,26 +55,33 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
     const colors = categoryColors[category] || categoryColors.layout
 
     return (
-        <div
-            style={{ marginLeft: depth * 16 }}
-        >
+        <div>
             <div
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-pointer
           ${isSelected
                         ? `${colors.bg} ${colors.border} shadow-lg`
                         : 'bg-slate-800/50 border-slate-700/50 hover:border-slate-600'
-                    }`}
+                    }
+          ${isDragging ? 'opacity-40 border-dashed border-pink-500' : ''}`}
                 onClick={() => selectNode(node.id)}
             >
                 {/* Grip */}
-                <div className="flex-shrink-0 text-slate-600">
+                <div
+                    ref={setNodeRef}
+                    {...attributes}
+                    {...listeners}
+                    className="flex-shrink-0 text-slate-500 hover:text-white cursor-grab active:cursor-grabbing p-1 -m-1"
+                >
                     <GripVertical size={14} />
                 </div>
 
                 {/* Toggle expand/collapse */}
                 {hasChildren ? (
                     <button
-                        onClick={(e) => { e.stopPropagation(); setCollapsed(!collapsed) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setCollapsed(!collapsed)
+                        }}
                         className="flex-shrink-0 p-0.5 rounded text-slate-400 hover:text-white transition-colors"
                     >
                         {collapsed ? <ChevronRight size={14} /> : <ChevronExpand size={14} />}
@@ -96,7 +110,10 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
                 {/* Acciones */}
                 <div className="flex items-center gap-0.5 flex-shrink-0">
                     <button
-                        onClick={(e) => { e.stopPropagation(); moveNode(node.id, -1) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            moveNode(node.id, -1)
+                        }}
                         disabled={index === 0}
                         className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
               disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
@@ -105,7 +122,10 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
                         <ChevronUp size={13} />
                     </button>
                     <button
-                        onClick={(e) => { e.stopPropagation(); moveNode(node.id, 1) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            moveNode(node.id, 1)
+                        }}
                         disabled={index === total - 1}
                         className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-700
               disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
@@ -114,14 +134,20 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
                         <ChevronDown size={13} />
                     </button>
                     <button
-                        onClick={(e) => { e.stopPropagation(); duplicateNode(node.id) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            duplicateNode(node.id)
+                        }}
                         className="p-1 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
                         title="Duplicar"
                     >
                         <Copy size={13} />
                     </button>
                     <button
-                        onClick={(e) => { e.stopPropagation(); removeNode(node.id) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            removeNode(node.id)
+                        }}
                         className="p-1 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                         title="Eliminar"
                     >
@@ -130,18 +156,32 @@ export default function NodeCard({ node, index, total, depth }: NodeCardProps) {
                 </div>
             </div>
 
-            {/* Render children recursivo */}
-            {!collapsed && hasChildren && (
-                <div className="mt-1 space-y-1 border-l-2 border-slate-700/50 ml-4">
-                    {node.children.map((child, i) => (
-                        <NodeCard
-                            key={child.id}
-                            node={child}
-                            index={i}
-                            total={node.children.length}
-                            depth={1}
+            {/* Render children recursivo con DropZones */}
+            {!collapsed && acceptsChildren && (
+                <div className="mt-1 flex flex-col border-l-2 border-slate-700/50 ml-4 pb-1">
+                    {hasChildren ? (
+                        <>
+                            {node.children.map((child, i) => (
+                                <React.Fragment key={child.id}>
+                                    <DropZone id={`${node.id}-above-${child.id}`} parentId={node.id} index={i} />
+                                    <NodeCard
+                                        node={child}
+                                        index={i}
+                                        total={node.children.length}
+                                    />
+                                </React.Fragment>
+                            ))}
+                            <DropZone id={`${node.id}-end`} parentId={node.id} index={node.children.length} />
+                        </>
+                    ) : (
+                        <DropZone
+                            id={`${node.id}-inside-empty`}
+                            parentId={node.id}
+                            index={0}
+                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-slate-700 flex items-center justify-center text-[10px] text-slate-500"
+                            text="Soltá componentes aquí"
                         />
-                    ))}
+                    )}
                 </div>
             )}
         </div>

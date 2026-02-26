@@ -17,6 +17,10 @@ interface LandingState {
   updateNodeTitle: (nodeId: string, title: string) => void
   duplicateNode: (nodeId: string) => void
   getSelectedNode: () => TreeNode | null
+
+  // DnD actions
+  insertNodeAtIndex: (parentId: string | null, index: number, componentType: string) => void
+  moveNodeTo: (nodeId: string, newParentId: string | null, index: number) => void
 }
 
 // --- Utilidades para operar sobre el árbol ---
@@ -104,6 +108,40 @@ function insertAfterInTree(tree: TreeNode[], afterId: string, newNode: TreeNode)
   }))
 }
 
+function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode): TreeNode[] {
+  if (parentId === null) {
+    const copy = [...tree]
+    copy.splice(index, 0, node)
+    return copy
+  }
+  return tree.map((n) => {
+    if (n.id === parentId) {
+      const copy = [...n.children]
+      copy.splice(index, 0, node)
+      return { ...n, children: copy }
+    }
+    return { ...n, children: insertNodeAt(n.children, parentId, index, node) }
+  })
+}
+
+function removeAndGetNode(tree: TreeNode[], id: string): { newTree: TreeNode[], node: TreeNode | null } {
+  let foundNode: TreeNode | null = null
+  const newTree = tree
+    .filter((n) => {
+      if (n.id === id) {
+        foundNode = n
+        return false
+      }
+      return true
+    })
+    .map((n) => {
+      const { newTree: children, node } = removeAndGetNode(n.children, id)
+      if (node) foundNode = node
+      return { ...n, children }
+    })
+  return { newTree, node: foundNode }
+}
+
 function createNode(componentType: string, landingName: string): TreeNode {
   const definition = getComponentDefinition(componentType)
   const defaultProps: Record<string, any> = {}
@@ -144,6 +182,25 @@ const useLandingStore = create<LandingState>((set, get) => ({
   },
 
   selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
+
+  insertNodeAtIndex: (parentId, index, componentType) => {
+    const { landingName } = get()
+    const newNode = createNode(componentType, landingName)
+    set((state) => ({
+      tree: insertNodeAt(state.tree, parentId, index, newNode),
+      selectedNodeId: newNode.id,
+    }))
+  },
+
+  moveNodeTo: (nodeId, newParentId, index) => {
+    set((state) => {
+      const { newTree, node } = removeAndGetNode(state.tree, nodeId)
+      if (!node) return state
+      return {
+        tree: insertNodeAt(newTree, newParentId, index, node),
+      }
+    })
+  },
 
   addNode: (parentId, componentType) => {
     const { landingName } = get()

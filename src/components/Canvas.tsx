@@ -3,7 +3,9 @@
  */
 import useLandingStore from '../store/landingStore'
 import NodeCard from './BlockCard'
+import DropZone from './DropZone'
 import { LayoutList } from 'lucide-react'
+import React from 'react'
 
 export default function Canvas() {
     const tree = useLandingStore((s) => s.tree)
@@ -35,25 +37,35 @@ export default function Canvas() {
                 }}
             >
                 {tree.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                    <div className="flex flex-col items-center justify-center h-full text-slate-500 relative">
+                        <DropZone
+                            id="root-empty"
+                            parentId={null}
+                            index={0}
+                            className="absolute inset-4 rounded-xl border-2 border-dashed border-slate-700/50 flex items-center justify-center text-sm font-medium z-10 bg-slate-800/20"
+                            text="Soltá un componente aquí"
+                        />
                         <LayoutList size={48} className="mb-3 opacity-30" />
                         <p className="text-sm font-medium">Sin componentes</p>
-                        <p className="text-xs mt-1 text-center px-8">
-                            Seleccioná un componente del panel izquierdo para comenzar.
+                        <p className="text-xs mt-1 text-center px-8 relative z-20 pointer-events-none">
+                            Seleccioná o arrastrá un componente del panel izquierdo para comenzar.
                             Usá <span className="text-blue-400 font-medium">Responsive Desktop</span> y <span className="text-blue-400 font-medium">Responsive Mobile</span> para separar las vistas.
                         </p>
                     </div>
                 ) : (
-                    <div className="p-4 space-y-1.5">
+                    <div className="p-4 flex flex-col min-h-full">
                         {tree.map((node, index) => (
-                            <NodeCard
-                                key={node.id}
-                                node={node}
-                                index={index}
-                                total={tree.length}
-                                depth={0}
-                            />
+                            <React.Fragment key={node.id}>
+                                <DropZone id={`root-above-${node.id}`} parentId={null} index={index} />
+                                <NodeCard
+                                    node={node}
+                                    index={index}
+                                    total={tree.length}
+                                    depth={0}
+                                />
+                            </React.Fragment>
                         ))}
+                        <DropZone id="root-end" parentId={null} index={tree.length} className="flex-1 mt-2 min-h-[100px]" />
                     </div>
                 )}
             </div>
