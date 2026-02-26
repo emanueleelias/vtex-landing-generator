@@ -36,7 +36,6 @@ const categoryLabels: Record<string, string> = {
 export default function BlockLibrary() {
     const addNode = useLandingStore((s) => s.addNode)
     const selectedNodeId = useLandingStore((s) => s.selectedNodeId)
-    const selectedTab = useLandingStore((s) => s.selectedTab)
     const getSelectedNode = useLandingStore((s) => s.getSelectedNode)
 
     const grouped = getComponentsByCategory()
@@ -67,10 +66,7 @@ export default function BlockLibrary() {
                     Componentes
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                    Click para agregar a{' '}
-                    <span className="text-pink-400 font-medium">
-                        {selectedTab === 'desktop' ? 'Escritorio' : 'Celular'}
-                    </span>
+                    Click para agregar al canvas
                 </p>
                 {selectedNodeId && (
                     <p className="text-xs text-emerald-400 mt-1">

@@ -1,6 +1,6 @@
 /**
  * Genera la estructura JSONC completa de una landing VTEX IO
- * a partir de árboles de nodos compositivos.
+ * a partir del árbol único de nodos.
  */
 import type { TreeNode } from './types'
 
@@ -12,15 +12,12 @@ function nodeKey(node: TreeNode): string {
 }
 
 /**
- * Filtra las props que mantienen su valor por defecto o son internas
- * para generar un JSON limpio.
+ * Filtra las props internas y valores vacíos/default para generar un JSON limpio.
  */
 function cleanProps(props: Record<string, any>): Record<string, any> {
   const clean: Record<string, any> = {}
   for (const [key, value] of Object.entries(props)) {
-    // Omitir props internas (prefijo __)
     if (key.startsWith('__')) continue
-    // Omitir valores vacíos o defaults comunes
     if (value === '' || value === false || value === 0) continue
     clean[key] = value
   }
@@ -28,26 +25,22 @@ function cleanProps(props: Record<string, any>): Record<string, any> {
 }
 
 /**
- * Recorre recursivamente el árbol de nodos y genera los bloques VTEX.
- * Cada nodo produce una entrada en el objeto de salida.
+ * Recorre recursivamente el árbol y genera los bloques VTEX.
  */
 function processTree(nodes: TreeNode[], output: Record<string, any>): void {
   for (const node of nodes) {
     const key = nodeKey(node)
     const entry: Record<string, any> = {}
 
-    // Children
     if (node.children.length > 0) {
-      // custom-container usa "children" como array de keys
       entry.children = node.children.map((child) => nodeKey(child))
     }
 
-    // Title (para custom-container)
+    // Title para custom-container
     if (node.type === 'custom-container' && node.props.__title) {
       entry.title = node.props.__title
     }
 
-    // Props
     const cleaned = cleanProps(node.props)
     if (Object.keys(cleaned).length > 0) {
       entry.props = cleaned
@@ -55,7 +48,7 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
 
     output[key] = entry
 
-    // Recursión
+    // Recursión a children
     processTree(node.children, output)
   }
 }
@@ -65,75 +58,18 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
  */
 export function generateLandingJSON(state: {
   landingName: string
-  desktopTree: TreeNode[]
-  mobileTree: TreeNode[]
+  tree: TreeNode[]
 }): Record<string, any> {
-  const { landingName, desktopTree, mobileTree } = state
+  const { landingName, tree } = state
   const output: Record<string, any> = {}
 
-  // --- Nodo raíz ---
+  // Nodo raíz: store.custom con los nodos de nivel superior como blocks
   output[`store.custom#${landingName}`] = {
-    blocks: [
-      `responsive-layout.desktop#${landingName}`,
-      `responsive-layout.mobile#${landingName}`,
-    ],
+    blocks: tree.map((node) => nodeKey(node)),
   }
 
-  // --- DESKTOP ---
-  const desktopColKey = `flex-layout.col#${landingName}-desktop`
-  const desktopRowKey = `flex-layout.row#${landingName}-desktop`
-
-  output[`responsive-layout.desktop#${landingName}`] = {
-    children: [desktopRowKey],
-  }
-
-  output[desktopRowKey] = {
-    children: [desktopColKey],
-    props: {
-      blockClass: `${landingName}-desktop`,
-      fullWidth: true,
-    },
-  }
-
-  // Recopilar children keys del desktop
-  const desktopChildKeys = desktopTree.map((node) => nodeKey(node))
-  output[desktopColKey] = {
-    children: desktopChildKeys,
-    props: {
-      blockClass: `${landingName}-desktop`,
-    },
-  }
-
-  // Procesar nodos desktop
-  processTree(desktopTree, output)
-
-  // --- MOBILE ---
-  const mobileColKey = `flex-layout.col#${landingName}-mobile`
-  const mobileRowKey = `flex-layout.row#${landingName}-mobile`
-
-  output[`responsive-layout.mobile#${landingName}`] = {
-    children: [mobileRowKey],
-  }
-
-  output[mobileRowKey] = {
-    children: [mobileColKey],
-    props: {
-      blockClass: `${landingName}-mobile`,
-      fullWidth: true,
-    },
-  }
-
-  // Recopilar children keys del mobile
-  const mobileChildKeys = mobileTree.map((node) => nodeKey(node))
-  output[mobileColKey] = {
-    children: mobileChildKeys,
-    props: {
-      blockClass: `${landingName}-mobile`,
-    },
-  }
-
-  // Procesar nodos mobile
-  processTree(mobileTree, output)
+  // Procesar todo el árbol
+  processTree(tree, output)
 
   return output
 }
@@ -141,22 +77,6 @@ export function generateLandingJSON(state: {
 /**
  * Serializa el JSON a formato JSONC con comentarios descriptivos.
  */
-export function serializeToJSONC(jsonObj: Record<string, any>, landingName: string): string {
-  const rawJson = JSON.stringify(jsonObj, null, 2)
-
-  let result = rawJson
-
-  // Comentario al inicio del responsive-layout.desktop
-  result = result.replace(
-    `"responsive-layout.desktop#${landingName}"`,
-    `// DESKTOP\n  "responsive-layout.desktop#${landingName}"`
-  )
-
-  // Comentario al inicio del responsive-layout.mobile
-  result = result.replace(
-    `"responsive-layout.mobile#${landingName}"`,
-    `// MOBILE\n  "responsive-layout.mobile#${landingName}"`
-  )
-
-  return result
+export function serializeToJSONC(jsonObj: Record<string, any>, _landingName: string): string {
+  return JSON.stringify(jsonObj, null, 2)
 }

@@ -8,16 +8,16 @@ export default function ExportButton() {
 
     const handleExport = async () => {
         const state = useLandingStore.getState()
-        const { landingName, desktopTree, mobileTree } = state
+        const { landingName, tree } = state
 
-        if (desktopTree.length === 0 && mobileTree.length === 0) {
+        if (tree.length === 0) {
             setStatus('error')
             setTimeout(() => setStatus('idle'), 2000)
             return
         }
 
         try {
-            const json = generateLandingJSON({ landingName, desktopTree, mobileTree })
+            const json = generateLandingJSON({ landingName, tree })
             const content = serializeToJSONC(json, landingName)
 
             await navigator.clipboard.writeText(content)
