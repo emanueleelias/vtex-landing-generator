@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const stackLayout: VtexComponentDefinition = {
     type: 'stack-layout',
     label: 'Stack Layout',
-    icon: 'Layers',
+    icon: 'SquareStack',
     category: 'layout',
     acceptsChildren: true,
     propsSchema: [

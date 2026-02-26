@@ -15,6 +15,8 @@ import {
   ImageIcon,
   Plus,
   Link2,
+  SquareStack,
+  Anchor,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -28,6 +30,8 @@ const iconMap: Record<string, React.ElementType> = {
   Type,
   ImageIcon,
   Link2,
+  SquareStack,
+  Anchor,
 }
 
 const categoryLabels: Record<string, string> = {

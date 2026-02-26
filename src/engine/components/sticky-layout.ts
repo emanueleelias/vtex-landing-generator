@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const stickyLayout: VtexComponentDefinition = {
     type: 'sticky-layout',
     label: 'Sticky Layout',
-    icon: 'Pin',
+    icon: 'Anchor',
     category: 'layout',
     acceptsChildren: true,
     propsSchema: [
