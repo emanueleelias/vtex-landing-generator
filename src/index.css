@@ -10,11 +10,16 @@
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  color: #E2E8F0;
+  color: #1e293b;
   overflow: hidden;
   height: 100vh;
-  /* Fondo base espacial muy oscuro */
-  background-color: #050510; 
+  /* Fondo base luz */
+  background-color: #f8fafc;
+}
+
+.dark body {
+  color: #E2E8F0;
+  background-color: #050510;
 }
 
 #root {
@@ -34,11 +39,19 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(71, 85, 105, 0.4);
+  background: rgba(71, 85, 105, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.8);
 }
 
@@ -61,10 +74,11 @@ select:focus {
 /* Glassmorphism Classes reutilizables */
 @layer utilities {
   .glass-panel {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+    @apply bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-black/5 dark:border-white/5;
   }
+
   .glass-card {
-    @apply bg-slate-800/20 backdrop-blur-md border border-white/5 shadow-lg;
+    @apply bg-white/20 dark:bg-slate-800/20 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-lg;
   }
 }
 
@@ -76,8 +90,13 @@ select:focus {
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-color: #050510;
+  background-color: #f8fafc;
   overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.dark .mesh-bg {
+  background-color: #050510;
 }
 
 .mesh-blob-1,
@@ -90,12 +109,13 @@ select:focus {
   animation: float 20s infinite ease-in-out alternate;
 }
 
+/* Modo claro (colores pastel vivos) */
 .mesh-blob-1 {
   top: -10%;
   left: -10%;
   width: 50vw;
   height: 50vw;
-  background: radial-gradient(circle, rgba(20, 32, 50, 0.8) 0%, rgba(20, 32, 50, 0) 70%);
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.4) 0%, rgba(147, 197, 253, 0) 70%);
   animation-duration: 25s;
 }
 
@@ -104,7 +124,7 @@ select:focus {
   right: -10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(247, 25, 99, 0.15) 0%, rgba(247, 25, 99, 0) 70%);
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.3) 0%, rgba(244, 114, 182, 0) 70%);
   animation-duration: 30s;
   animation-delay: -5s;
 }
@@ -114,22 +134,51 @@ select:focus {
   left: 30%;
   width: 40vw;
   height: 40vw;
-  background: radial-gradient(circle, rgba(29, 78, 216, 0.1) 0%, rgba(29, 78, 216, 0) 70%);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.3) 0%, rgba(167, 139, 250, 0) 70%);
   animation-duration: 28s;
   animation-direction: alternate-reverse;
 }
 
+/* Modo oscuro (colores profundos) */
+.dark .mesh-blob-1 {
+  background: radial-gradient(circle, rgba(20, 32, 50, 0.8) 0%, rgba(20, 32, 50, 0) 70%);
+}
+
+.dark .mesh-blob-2 {
+  background: radial-gradient(circle, rgba(247, 25, 99, 0.15) 0%, rgba(247, 25, 99, 0) 70%);
+}
+
+.dark .mesh-blob-3 {
+  background: radial-gradient(circle, rgba(29, 78, 216, 0.1) 0%, rgba(29, 78, 216, 0) 70%);
+}
+
 @keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(5%, 5%) scale(1.05); }
-  100% { transform: translate(-5%, 10%) scale(0.95); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(5%, 5%) scale(1.05);
+  }
+
+  100% {
+    transform: translate(-5%, 10%) scale(0.95);
+  }
 }
 
 /* Animación de entrada para bloques */
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .block-enter {
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

@@ -42,11 +42,11 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
         data: { type: 'existing-node', node },
     })
 
-    // Colores por categoría adaptados a Glassmorphism
+    // Colores por categoría adaptados a Glassmorphism dual
     const categoryColors: Record<string, { border: string; bg: string; badge: string }> = {
-        layout: { border: 'border-blue-500/30', bg: 'bg-blue-500/10', badge: 'bg-blue-500/20 text-blue-300 border border-blue-500/30' },
-        content: { border: 'border-amber-500/30', bg: 'bg-amber-500/10', badge: 'bg-amber-500/20 text-amber-300 border border-amber-500/30' },
-        media: { border: 'border-purple-500/30', bg: 'bg-purple-500/10', badge: 'bg-purple-500/20 text-purple-300 border border-purple-500/30' },
+        layout: { border: 'border-blue-500/30', bg: 'bg-blue-500/10', badge: 'bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30' },
+        content: { border: 'border-amber-500/30', bg: 'bg-amber-500/10', badge: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' },
+        media: { border: 'border-purple-500/30', bg: 'bg-purple-500/10', badge: 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30' },
     }
 
     const category = definition?.category || 'layout'
@@ -58,7 +58,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 className={`flex items-center gap-2 p-2.5 rounded-xl border backdrop-blur-md shadow-sm transition-all cursor-pointer
           ${isSelected
                         ? `${colors.bg} ${colors.border} ring-1 ring-${colors.border.split('-')[1]}-500/50 shadow-lg`
-                        : 'bg-black/20 border-white/5 hover:border-white/20 hover:bg-black/40'
+                        : 'bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/10 dark:hover:bg-black/40'
                     }
           ${isDragging ? 'opacity-40 border-dashed border-pink-500' : ''}`}
                 onClick={() => selectNode(node.id)}
@@ -68,7 +68,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                     ref={setNodeRef}
                     {...attributes}
                     {...listeners}
-                    className="flex-shrink-0 text-slate-500 hover:text-white cursor-grab active:cursor-grabbing p-1 -m-1"
+                    className="flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-white cursor-grab active:cursor-grabbing p-1 -m-1"
                 >
                     <GripVertical size={14} />
                 </div>
@@ -80,7 +80,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             e.stopPropagation()
                             setCollapsed(!collapsed)
                         }}
-                        className="flex-shrink-0 p-0.5 rounded text-slate-400 hover:text-white transition-colors"
+                        className="flex-shrink-0 p-0.5 rounded text-slate-400 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
                     >
                         {collapsed ? <ChevronRight size={14} /> : <ChevronExpand size={14} />}
                     </button>
@@ -91,7 +91,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-slate-200 truncate">
+                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
                             {definition?.label || node.type}
                         </p>
                         {acceptsChildren && (
@@ -112,8 +112,8 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             moveNode(node.id, -1)
                         }}
                         disabled={index === 0}
-                        className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10
-              disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10
+                disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                         title="Mover arriba"
                     >
                         <ChevronUp size={13} />
@@ -124,8 +124,8 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             moveNode(node.id, 1)
                         }}
                         disabled={index === total - 1}
-                        className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10
-              disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10
+                disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                         title="Mover abajo"
                     >
                         <ChevronDown size={13} />
@@ -135,7 +135,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             e.stopPropagation()
                             removeNode(node.id)
                         }}
-                        className="p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/20 transition-colors"
+                        className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/20 transition-colors"
                         title="Eliminar"
                     >
                         <Trash2 size={13} />
@@ -145,7 +145,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
 
             {/* Render children recursivo con DropZones */}
             {!collapsed && acceptsChildren && (
-                <div className="mt-1 flex flex-col border-l-2 border-white/10 ml-4 pb-1">
+                <div className="mt-1 flex flex-col border-l-2 border-black/10 dark:border-white/10 ml-4 pb-1">
                     {hasChildren ? (
                         <>
                             {node.children.map((child, i) => (
@@ -165,7 +165,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                             id={`${node.id}-inside-empty`}
                             parentId={node.id}
                             index={0}
-                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-white/20 flex items-center justify-center text-[10px] text-slate-400 bg-black/10"
+                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-black/20 dark:border-white/20 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-400 bg-black/5 dark:bg-black/10"
                             text="Soltá componentes aquí"
                         />
                     )}

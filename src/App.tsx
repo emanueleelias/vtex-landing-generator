@@ -11,9 +11,9 @@ import {
     defaultDropAnimationSideEffects,
     pointerWithin
 } from '@dnd-kit/core'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getComponentDefinition } from './engine/vtexComponents'
-import { Box } from 'lucide-react'
+import { Box, Sun, Moon } from 'lucide-react'
 
 // Componente simple para el DragOverlay
 function DragOverlayCard({ activeData }: { activeData: any }) {
@@ -30,8 +30,8 @@ function DragOverlayCard({ activeData }: { activeData: any }) {
                 <Box size={18} className="text-pink-400" />
             </div>
             <div className="flex-1">
-                <p className="text-sm font-medium text-white">{def?.label || 'Componente'}</p>
-                <p className="text-[10px] text-slate-400 font-mono">Arraste para mover...</p>
+                <p className="text-sm font-medium text-slate-800 dark:text-white">{def?.label || 'Componente'}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Arraste para mover...</p>
             </div>
         </div>
     )
@@ -42,6 +42,17 @@ export default function App() {
     const setLandingName = useLandingStore((s) => s.setLandingName)
     const insertNodeAtIndex = useLandingStore((s) => s.insertNodeAtIndex)
     const moveNodeTo = useLandingStore((s) => s.moveNodeTo)
+    const theme = useLandingStore((s) => s.theme)
+    const toggleTheme = useLandingStore((s) => s.toggleTheme)
+
+    // Sincronizar tema con html class
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    }, [theme])
 
     const [activeId, setActiveId] = useState<string | null>(null)
     const [activeData, setActiveData] = useState<any>(null)
@@ -90,23 +101,23 @@ export default function App() {
                 <div className="mesh-blob-3" />
             </div>
 
-            <div className="flex flex-col h-screen relative z-0">
+            <div className="flex flex-col h-screen relative z-0 text-slate-800 dark:text-slate-100">
                 {/* Header */}
                 <header className="flex items-center justify-between px-6 py-3 glass-panel border-b-0 rounded-b-2xl mx-4 mt-2 shadow-2xl">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-md">
                                 <span className="text-white font-bold text-sm">V</span>
                             </div>
-                            <h1 className="text-lg font-semibold text-white tracking-tight">
+                            <h1 className="text-lg font-semibold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
                                 Landing Generator
                             </h1>
                         </div>
 
-                        <div className="h-6 w-px bg-slate-700" />
+                        <div className="h-6 w-px bg-black/10 dark:bg-slate-700" />
 
                         <div className="flex items-center gap-2">
-                            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider drop-shadow-sm">
                                 Nombre:
                             </label>
                             <input
@@ -114,14 +125,23 @@ export default function App() {
                                 value={landingName}
                                 onChange={(e) => setLandingName(e.target.value)}
                                 placeholder="nombre-de-la-landing"
-                                className="bg-black/20 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white
-             placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5 focus:ring-1 focus:ring-pink-500/30
+                                className="bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white
+             placeholder-slate-400 dark:placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5 focus:ring-1 focus:ring-pink-500/30
              transition-all w-64 backdrop-blur-sm shadow-inner"
                             />
                         </div>
                     </div>
 
-                    <ExportButton />
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors shadow-sm"
+                            title={`Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`}
+                        >
+                            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
+                        <ExportButton />
+                    </div>
                 </header>
 
                 {/* Layout principal 3 paneles */}
@@ -132,7 +152,7 @@ export default function App() {
                     </aside>
 
                     {/* Panel central: Canvas */}
-                    <main className="flex-1 flex flex-col overflow-hidden rounded-2xl border border-white/5 bg-black/10 shadow-inner">
+                    <main className="flex-1 flex flex-col overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 bg-white/20 dark:bg-black/10 shadow-inner">
                         <Canvas />
                     </main>
 
@@ -143,10 +163,10 @@ export default function App() {
                 </div>
 
                 {/* Footer flotante */}
-                <footer className="absolute bottom-2 left-1/2 -translate-x-1/2 py-1.5 px-4 rounded-full text-[10px] text-slate-400 glass-panel flex items-center gap-2 shadow-lg">
+                <footer className="absolute bottom-2 left-1/2 -translate-x-1/2 py-1.5 px-4 rounded-full text-[10px] text-slate-500 dark:text-slate-400 glass-panel flex items-center gap-2 shadow-lg">
                     <span>&copy; {new Date().getFullYear()} Emanuele, Elias Daniel</span>
-                    <span className="text-slate-600">•</span>
-                    <span className="font-mono text-pink-400/80">v{__APP_VERSION__}</span>
+                    <span className="text-slate-400 dark:text-slate-600">•</span>
+                    <span className="font-mono text-pink-500 dark:text-pink-400/80">v{__APP_VERSION__}</span>
                 </footer>
             </div>
 

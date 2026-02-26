@@ -6,6 +6,7 @@ interface LandingState {
   landingName: string
   tree: TreeNode[]
   selectedNodeId: string | null
+  theme: 'dark' | 'light'
 
   setLandingName: (name: string) => void
   selectNode: (nodeId: string | null) => void
@@ -20,6 +21,8 @@ interface LandingState {
   // DnD actions
   insertNodeAtIndex: (parentId: string | null, index: number, componentType: string) => void
   moveNodeTo: (nodeId: string, newParentId: string | null, index: number) => void
+
+  toggleTheme: () => void
 }
 
 // --- Utilidades para operar sobre el árbol ---
@@ -148,6 +151,7 @@ const useLandingStore = create<LandingState>((set, get) => ({
   landingName: 'mi-landing',
   tree: [],
   selectedNodeId: null,
+  theme: 'dark',
 
   setLandingName: (name) => {
     const slug = name
@@ -243,6 +247,10 @@ const useLandingStore = create<LandingState>((set, get) => ({
     if (!selectedNodeId) return null
     return findNode(tree, selectedNodeId)
   },
+
+  toggleTheme: () => {
+    set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' }))
+  }
 }))
 
 export default useLandingStore
