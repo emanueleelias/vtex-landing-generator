@@ -60,9 +60,6 @@ function cleanProps(props: Record<string, any>, nodeType: string): Record<string
   return clean
 }
 
-/**
- * Recorre recursivamente el árbol y genera los bloques VTEX.
- */
 function processTree(nodes: TreeNode[], output: Record<string, any>): void {
   for (const node of nodes) {
     // Los nodos de referencia no generan su propio bloque
@@ -71,13 +68,24 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
     const key = nodeKey(node)
     const entry: Record<string, any> = {}
 
-    if (node.children.length > 0) {
+    // Procesar children
+    if (node.children && node.children.length > 0) {
       entry.children = node.children.map((child) => {
         // Si el hijo es una referencia, usar su targetKey directamente
         if (child.type === '__block-reference' && child.props.__targetKey) {
           return child.props.__targetKey
         }
         return nodeKey(child)
+      })
+    }
+
+    // Procesar blocks
+    if (node.blocks && node.blocks.length > 0) {
+      entry.blocks = node.blocks.map((blockChild) => {
+        if (blockChild.type === '__block-reference' && blockChild.props.__targetKey) {
+          return blockChild.props.__targetKey
+        }
+        return nodeKey(blockChild)
       })
     }
 
@@ -94,7 +102,14 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
     output[key] = entry
 
     // Recursión a children (excluye referencias, ya se saltean arriba)
-    processTree(node.children, output)
+    if (node.children) {
+      processTree(node.children, output)
+    }
+
+    // Recursión a blocks
+    if (node.blocks) {
+      processTree(node.blocks, output)
+    }
   }
 }
 

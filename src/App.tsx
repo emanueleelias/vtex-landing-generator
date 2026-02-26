@@ -74,12 +74,12 @@ export default function App() {
         const overData = over.data.current
         if (overData?.type !== 'drop-zone') return
 
-        const { parentId, index } = overData
+        const { parentId, index, targetType } = overData
         const activeData = active.data.current
 
         if (activeData?.type === 'new-component') {
             // Insertar nuevo
-            insertNodeAtIndex(parentId, index, activeData.componentType)
+            insertNodeAtIndex(parentId, index, activeData.componentType, targetType)
         } else if (activeData?.type === 'existing-node') {
             // Mover existente
             const nodeId = activeData.node.id
@@ -87,7 +87,7 @@ export default function App() {
             // pero para evitar bugs circulares básicos, no soltar en su propio dropzone)
             if (parentId === nodeId) return
 
-            moveNodeTo(nodeId, parentId, index)
+            moveNodeTo(nodeId, parentId, index, targetType)
         }
     }
 
@@ -123,8 +123,8 @@ export default function App() {
                             <button
                                 onClick={() => setGenerationMode('landing')}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'landing'
-                                        ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                                     }`}
                             >
                                 Landing
@@ -132,8 +132,8 @@ export default function App() {
                             <button
                                 onClick={() => setGenerationMode('block')}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'block'
-                                        ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                                     }`}
                             >
                                 Bloque

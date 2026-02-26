@@ -19,6 +19,8 @@ import {
     stackLayout,
     stickyLayout,
     sliderLayout,
+    listContextProductList,
+    productSummaryShelf,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -33,6 +35,8 @@ const vtexComponents: VtexComponentDefinition[] = [
     stickyLayout,
     blockReference,
     sliderLayout,
+    listContextProductList,
+    productSummaryShelf,
 ]
 
 export default vtexComponents

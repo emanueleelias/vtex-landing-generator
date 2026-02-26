@@ -19,6 +19,7 @@ export interface VtexComponentDefinition {
   icon: string
   category: 'layout' | 'content' | 'media' | 'utility'
   acceptsChildren: boolean
+  acceptsBlocks?: boolean
   propsSchema: PropSchema[]
 }
 
@@ -31,4 +32,5 @@ export interface TreeNode {
   title?: string
   props: Record<string, any>
   children: TreeNode[]
+  blocks?: TreeNode[]
 }

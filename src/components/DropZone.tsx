@@ -6,12 +6,13 @@ interface DropZoneProps {
     index: number
     className?: string
     text?: string
+    targetType?: 'children' | 'blocks'
 }
 
-export default function DropZone({ id, parentId, index, className, text }: DropZoneProps) {
+export default function DropZone({ id, parentId, index, className, text, targetType = 'children' }: DropZoneProps) {
     const { setNodeRef, isOver } = useDroppable({
         id,
-        data: { type: 'drop-zone', parentId, index },
+        data: { type: 'drop-zone', parentId, index, targetType },
     })
 
     if (className) {

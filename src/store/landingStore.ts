@@ -22,8 +22,8 @@ interface LandingState {
   getSelectedNode: () => TreeNode | null
 
   // DnD actions
-  insertNodeAtIndex: (parentId: string | null, index: number, componentType: string) => void
-  moveNodeTo: (nodeId: string, newParentId: string | null, index: number) => void
+  insertNodeAtIndex: (parentId: string | null, index: number, componentType: string, targetType?: 'children' | 'blocks') => void
+  moveNodeTo: (nodeId: string, newParentId: string | null, index: number, targetType?: 'children' | 'blocks') => void
 
   toggleTheme: () => void
   getAllBlockKeys: () => string[]
@@ -41,8 +41,12 @@ function generateNodeId(): string {
 function findNode(tree: TreeNode[], id: string): TreeNode | null {
   for (const node of tree) {
     if (node.id === id) return node
-    const found = findNode(node.children, id)
-    if (found) return found
+    const foundChild = findNode(node.children, id)
+    if (foundChild) return foundChild
+    if (node.blocks) {
+      const foundBlock = findNode(node.blocks, id)
+      if (foundBlock) return foundBlock
+    }
   }
   return null
 }
@@ -50,25 +54,42 @@ function findNode(tree: TreeNode[], id: string): TreeNode | null {
 function removeFromTree(tree: TreeNode[], id: string): TreeNode[] {
   return tree
     .filter((node) => node.id !== id)
-    .map((node) => ({
-      ...node,
-      children: removeFromTree(node.children, id),
-    }))
+    .map((node) => {
+      const newNode = {
+        ...node,
+        children: removeFromTree(node.children, id),
+      }
+      if (node.blocks) {
+        newNode.blocks = removeFromTree(node.blocks, id)
+      }
+      return newNode
+    })
 }
 
-function insertIntoParent(tree: TreeNode[], parentId: string, newNode: TreeNode): TreeNode[] {
+function insertIntoParent(tree: TreeNode[], parentId: string, newNode: TreeNode, targetType: 'children' | 'blocks' = 'children'): TreeNode[] {
   return tree.map((node) => {
     if (node.id === parentId) {
+      if (targetType === 'blocks') {
+        return { ...node, blocks: [...(node.blocks || []), newNode] }
+      }
       return { ...node, children: [...node.children, newNode] }
     }
-    return { ...node, children: insertIntoParent(node.children, parentId, newNode) }
+    const updatedNode = { ...node, children: insertIntoParent(node.children, parentId, newNode, targetType) }
+    if (node.blocks) {
+      updatedNode.blocks = insertIntoParent(node.blocks, parentId, newNode, targetType)
+    }
+    return updatedNode
   })
 }
 
 function updateInTree(tree: TreeNode[], id: string, updater: (node: TreeNode) => TreeNode): TreeNode[] {
   return tree.map((node) => {
     if (node.id === id) return updater(node)
-    return { ...node, children: updateInTree(node.children, id, updater) }
+    const updatedNode = { ...node, children: updateInTree(node.children, id, updater) }
+    if (node.blocks) {
+      updatedNode.blocks = updateInTree(node.blocks, id, updater)
+    }
+    return updatedNode
   })
 }
 
@@ -86,15 +107,21 @@ function moveInTree(tree: TreeNode[], id: string, direction: number): TreeNode[]
   if (tree.some((n) => n.id === id)) {
     return moveSibling(tree, id, direction)
   }
-  return tree.map((node) => ({
-    ...node,
-    children: moveInTree(node.children, id, direction),
-  }))
+  return tree.map((node) => {
+    const updatedNode = {
+      ...node,
+      children: moveInTree(node.children, id, direction),
+    }
+    if (node.blocks) {
+      updatedNode.blocks = moveInTree(node.blocks, id, direction)
+    }
+    return updatedNode
+  })
 }
 
 
 
-function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode): TreeNode[] {
+function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode, targetType: 'children' | 'blocks' = 'children'): TreeNode[] {
   if (parentId === null) {
     const copy = [...tree]
     copy.splice(index, 0, node)
@@ -102,11 +129,20 @@ function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, 
   }
   return tree.map((n) => {
     if (n.id === parentId) {
+      if (targetType === 'blocks') {
+        const copy = [...(n.blocks || [])]
+        copy.splice(index, 0, node)
+        return { ...n, blocks: copy }
+      }
       const copy = [...n.children]
       copy.splice(index, 0, node)
       return { ...n, children: copy }
     }
-    return { ...n, children: insertNodeAt(n.children, parentId, index, node) }
+    const updatedNode = { ...n, children: insertNodeAt(n.children, parentId, index, node, targetType) }
+    if (n.blocks) {
+      updatedNode.blocks = insertNodeAt(n.blocks, parentId, index, node, targetType)
+    }
+    return updatedNode
   })
 }
 
@@ -121,9 +157,18 @@ function removeAndGetNode(tree: TreeNode[], id: string): { newTree: TreeNode[], 
       return true
     })
     .map((n) => {
-      const { newTree: children, node } = removeAndGetNode(n.children, id)
-      if (node) foundNode = node
-      return { ...n, children }
+      const { newTree: children, node: childNode } = removeAndGetNode(n.children, id)
+      if (childNode) foundNode = childNode
+
+      const updatedNode = { ...n, children }
+
+      if (n.blocks) {
+        const { newTree: blocks, node: blockNode } = removeAndGetNode(n.blocks, id)
+        if (blockNode) foundNode = blockNode
+        updatedNode.blocks = blocks
+      }
+
+      return updatedNode
     })
   return { newTree, node: foundNode }
 }
@@ -163,21 +208,21 @@ const useLandingStore = create<LandingState>((set, get) => ({
 
   selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
-  insertNodeAtIndex: (parentId, index, componentType) => {
+  insertNodeAtIndex: (parentId, index, componentType, targetType = 'children') => {
     const { landingName } = get()
     const newNode = createNode(componentType, landingName)
     set((state) => ({
-      tree: insertNodeAt(state.tree, parentId, index, newNode),
+      tree: insertNodeAt(state.tree, parentId, index, newNode, targetType),
       selectedNodeId: newNode.id,
     }))
   },
 
-  moveNodeTo: (nodeId, newParentId, index) => {
+  moveNodeTo: (nodeId, newParentId, index, targetType = 'children') => {
     set((state) => {
       const { newTree, node } = removeAndGetNode(state.tree, nodeId)
       if (!node) return state
       return {
-        tree: insertNodeAt(newTree, newParentId, index, node),
+        tree: insertNodeAt(newTree, newParentId, index, node, targetType),
       }
     })
   },
@@ -261,6 +306,9 @@ const useLandingStore = create<LandingState>((set, get) => ({
           keys.push(`${node.type}#${node.identifier}`)
         }
         collect(node.children)
+        if (node.blocks) {
+          collect(node.blocks)
+        }
       }
     }
     collect(tree)

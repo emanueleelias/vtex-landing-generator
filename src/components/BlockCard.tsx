@@ -16,6 +16,8 @@ import {
     ChevronRight,
     ChevronDown as ChevronExpand,
     Link2,
+    Box,
+    LayoutList,
 } from 'lucide-react'
 
 interface NodeCardProps {
@@ -37,6 +39,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
     const isSelected = selectedNodeId === node.id
     const hasChildren = node.children.length > 0
     const acceptsChildren = definition?.acceptsChildren ?? false
+    const acceptsBlocks = definition?.acceptsBlocks ?? false
 
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
         id: `node-${node.id}`,
@@ -162,31 +165,79 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 </div>
             </div>
 
-            {/* Render children recursivo con DropZones */}
-            {!collapsed && acceptsChildren && (
-                <div className="mt-1 flex flex-col border-l-2 border-black/10 dark:border-white/10 ml-4 pb-1">
-                    {hasChildren ? (
-                        <>
-                            {node.children.map((child, i) => (
-                                <React.Fragment key={child.id}>
-                                    <DropZone id={`${node.id}-above-${child.id}`} parentId={node.id} index={i} />
-                                    <NodeCard
-                                        node={child}
-                                        index={i}
-                                        total={node.children.length}
+            {/* Render subzonas (blocks y children) */}
+            {!collapsed && (acceptsBlocks || acceptsChildren) && (
+                <div className="mt-1 flex flex-col ml-4 pb-1 space-y-3">
+                    {/* ZONA DE BLOCKS */}
+                    {acceptsBlocks && (
+                        <div className="flex flex-col border-l-2 border-indigo-500/30 dark:border-indigo-400/30">
+                            <div className="pl-2 flex items-center gap-1 mb-1 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                                <Box size={10} /> Blocks
+                            </div>
+                            <div className="flex flex-col">
+                                {node.blocks && node.blocks.length > 0 ? (
+                                    <>
+                                        {node.blocks.map((child, i) => (
+                                            <React.Fragment key={child.id}>
+                                                <DropZone id={`${node.id}-blocks-above-${child.id}`} parentId={node.id} index={i} targetType="blocks" />
+                                                <NodeCard
+                                                    node={child}
+                                                    index={i}
+                                                    total={node.blocks!.length}
+                                                />
+                                            </React.Fragment>
+                                        ))}
+                                        <DropZone id={`${node.id}-blocks-end`} parentId={node.id} index={node.blocks!.length} targetType="blocks" />
+                                    </>
+                                ) : (
+                                    <DropZone
+                                        id={`${node.id}-blocks-inside-empty`}
+                                        parentId={node.id}
+                                        index={0}
+                                        targetType="blocks"
+                                        className="mx-2 my-1 h-8 rounded-lg border border-dashed border-indigo-500/30 bg-indigo-500/5 flex items-center justify-center text-[10px] text-indigo-600/70 dark:text-indigo-400/70"
+                                        text="Soltá bloques aquí"
                                     />
-                                </React.Fragment>
-                            ))}
-                            <DropZone id={`${node.id}-end`} parentId={node.id} index={node.children.length} />
-                        </>
-                    ) : (
-                        <DropZone
-                            id={`${node.id}-inside-empty`}
-                            parentId={node.id}
-                            index={0}
-                            className="mx-2 my-1 h-8 rounded-lg border border-dashed border-black/20 dark:border-white/20 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-400 bg-black/5 dark:bg-black/10"
-                            text="Soltá componentes aquí"
-                        />
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ZONA DE CHILDREN */}
+                    {acceptsChildren && (
+                        <div className="flex flex-col border-l-2 border-black/10 dark:border-white/10">
+                            {acceptsBlocks && (
+                                <div className="pl-2 flex items-center gap-1 mb-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <LayoutList size={10} /> Children
+                                </div>
+                            )}
+                            <div className="flex flex-col">
+                                {hasChildren ? (
+                                    <>
+                                        {node.children.map((child, i) => (
+                                            <React.Fragment key={child.id}>
+                                                <DropZone id={`${node.id}-children-above-${child.id}`} parentId={node.id} index={i} targetType="children" />
+                                                <NodeCard
+                                                    node={child}
+                                                    index={i}
+                                                    total={node.children.length}
+                                                />
+                                            </React.Fragment>
+                                        ))}
+                                        <DropZone id={`${node.id}-children-end`} parentId={node.id} index={node.children.length} targetType="children" />
+                                    </>
+                                ) : (
+                                    <DropZone
+                                        id={`${node.id}-children-inside-empty`}
+                                        parentId={node.id}
+                                        index={0}
+                                        targetType="children"
+                                        className="mx-2 my-1 h-8 rounded-lg border border-dashed border-black/20 dark:border-white/20 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-400 bg-black/5 dark:bg-black/10"
+                                        text="Soltá componentes aquí"
+                                    />
+                                )}
+                            </div>
+                        </div>
                     )}
                 </div>
             )}
