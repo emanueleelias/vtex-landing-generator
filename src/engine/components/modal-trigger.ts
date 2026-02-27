@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const modalTrigger: VtexComponentDefinition = {
     type: 'modal-trigger',
     label: 'Modal Layout',
-    icon: 'AppWindow',
+    icon: 'AppWindowMac',
     category: 'layout',
     acceptsChildren: true,
     childrenTemplate: [

@@ -8,77 +8,77 @@
  */
 import type { VtexComponentDefinition } from './types'
 import {
-    blockReference,
-    customContainer,
-    flexLayoutCol,
-    flexLayoutRow,
-    image,
-    responsiveLayoutDesktop,
-    responsiveLayoutMobile,
-    richText,
-    stackLayout,
-    stickyLayout,
-    sliderLayout,
-    listContextProductList,
-    productSummaryShelf,
-    disclosureLayout,
-    disclosureTrigger,
-    disclosureContent,
-    disclosureStateIndicator,
-    disclosureLayoutGroup,
-    disclosureTriggerGroup,
-    icon,
-    iconCaret,
-    video,
-    tabLayout,
-    tabList,
-    tabListItem,
-    tabListItemChildren,
-    tabContent,
-    tabContentItem,
-    modalTrigger,
-    modalLayout,
-    modalHeader,
-    modalContent,
-    modalActions,
-    modalActionsClose,
+  blockReference,
+  customContainer,
+  flexLayoutCol,
+  flexLayoutRow,
+  image,
+  responsiveLayoutDesktop,
+  responsiveLayoutMobile,
+  richText,
+  stackLayout,
+  stickyLayout,
+  sliderLayout,
+  listContextProductList,
+  productSummaryShelf,
+  disclosureLayout,
+  disclosureTrigger,
+  disclosureContent,
+  disclosureStateIndicator,
+  disclosureLayoutGroup,
+  disclosureTriggerGroup,
+  icon,
+  iconCaret,
+  video,
+  tabLayout,
+  tabList,
+  tabListItem,
+  tabListItemChildren,
+  tabContent,
+  tabContentItem,
+  modalTrigger,
+  modalLayout,
+  modalHeader,
+  modalContent,
+  modalActions,
+  modalActionsClose,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
-    responsiveLayoutDesktop,
-    responsiveLayoutMobile,
-    flexLayoutRow,
-    flexLayoutCol,
-    customContainer,
-    richText,
-    image,
-    video,
-    icon,
-    iconCaret,
-    stackLayout,
-    stickyLayout,
-    blockReference,
-    sliderLayout,
-    tabLayout,
-    listContextProductList,
-    productSummaryShelf,
-    disclosureLayoutGroup,
-    disclosureTriggerGroup,
-    disclosureLayout,
-    disclosureTrigger,
-    disclosureContent,
-    disclosureStateIndicator,
-    tabList,
-    tabListItem,
-    tabListItemChildren,
-    tabContent,
-    tabContentItem,
-    modalTrigger,
-    modalLayout,
-    modalHeader,
-    modalContent,
-    modalActions,
-    modalActionsClose,
+  responsiveLayoutDesktop,
+  responsiveLayoutMobile,
+  flexLayoutRow,
+  flexLayoutCol,
+  customContainer,
+  richText,
+  image,
+  video,
+  icon,
+  iconCaret,
+  stackLayout,
+  stickyLayout,
+  blockReference,
+  sliderLayout,
+  tabLayout,
+  modalTrigger,
+  listContextProductList,
+  productSummaryShelf,
+  disclosureLayoutGroup,
+  disclosureTriggerGroup,
+  disclosureLayout,
+  disclosureTrigger,
+  disclosureContent,
+  disclosureStateIndicator,
+  tabList,
+  tabListItem,
+  tabListItemChildren,
+  tabContent,
+  tabContentItem,
+  modalLayout,
+  modalHeader,
+  modalContent,
+  modalActions,
+  modalActionsClose,
 ]
 export default vtexComponents
 
@@ -86,24 +86,24 @@ export default vtexComponents
  * Obtener definición de componente por tipo.
  */
 export function getComponentDefinition(type: string): VtexComponentDefinition | undefined {
-    return vtexComponents.find((c) => c.type === type)
+  return vtexComponents.find((c) => c.type === type)
 }
 
 /**
  * Obtener componentes agrupados por categoría.
  */
 export function getComponentsByCategory() {
-    const grouped: Record<string, VtexComponentDefinition[]> = {
-        layout: [],
-        content: [],
-        product: [],
-        utility: [],
+  const grouped: Record<string, VtexComponentDefinition[]> = {
+    layout: [],
+    content: [],
+    product: [],
+    utility: [],
+  }
+  vtexComponents.filter(c => !c.hidden).forEach((c) => {
+    if (!grouped[c.category]) {
+      grouped[c.category] = []
     }
-    vtexComponents.filter(c => !c.hidden).forEach((c) => {
-        if (!grouped[c.category]) {
-            grouped[c.category] = []
-        }
-        grouped[c.category].push(c)
-    })
-    return grouped
+    grouped[c.category].push(c)
+  })
+  return grouped
 }

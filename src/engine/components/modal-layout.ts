@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const modalLayout: VtexComponentDefinition = {
     type: 'modal-layout',
     label: 'Modal Layout',
-    icon: 'AppWindow',
+    icon: 'AppWindowMac',
     category: 'layout',
     acceptsChildren: true,
     hidden: true,

@@ -25,6 +25,7 @@ import {
   Layers,
   ToggleLeft,
   Library,
+  AppWindowMac,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -50,6 +51,7 @@ const iconMap: Record<string, React.ElementType> = {
   Layers,
   ToggleLeft,
   Library,
+  AppWindowMac,
 }
 
 const categoryLabels: Record<string, string> = {
