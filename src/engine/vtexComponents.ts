@@ -36,6 +36,12 @@ import {
     tabListItemChildren,
     tabContent,
     tabContentItem,
+    modalTrigger,
+    modalLayout,
+    modalHeader,
+    modalContent,
+    modalActions,
+    modalActionsClose,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -67,6 +73,12 @@ const vtexComponents: VtexComponentDefinition[] = [
     tabListItemChildren,
     tabContent,
     tabContentItem,
+    modalTrigger,
+    modalLayout,
+    modalHeader,
+    modalContent,
+    modalActions,
+    modalActionsClose,
 ]
 export default vtexComponents
 

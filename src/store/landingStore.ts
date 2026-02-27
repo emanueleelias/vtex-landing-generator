@@ -297,6 +297,65 @@ function syncTabLayoutChildren(
   return updatedTree
 }
 
+/**
+ * Sincroniza los hijos del modal-layout al cambiar __showHeader o __showActions
+ */
+function syncModalLayoutChildren(
+  tree: TreeNode[],
+  modalLayoutId: string,
+  newProps: Record<string, any>,
+  landingName: string
+): TreeNode[] {
+  const modalLayout = findNode(tree, modalLayoutId)
+  if (!modalLayout) return tree
+
+  let updatedTree = tree
+
+  // --- Sincronizar __showHeader ---
+  if (newProps.__showHeader !== undefined && newProps.__showHeader !== modalLayout.props.__showHeader) {
+    const hasHeader = modalLayout.children.some((c) => c.type === 'modal-header')
+    if (newProps.__showHeader && !hasHeader) {
+      // Agregar header al principio
+      const header = createNode('modal-header', landingName)
+      updatedTree = updateInTree(updatedTree, modalLayout.id, (n) => ({
+        ...n,
+        children: [header, ...n.children],
+      }))
+    } else if (!newProps.__showHeader && hasHeader) {
+      // Eliminar header
+      updatedTree = updateInTree(updatedTree, modalLayout.id, (n) => ({
+        ...n,
+        children: n.children.filter((c) => c.type !== 'modal-header'),
+      }))
+    }
+  }
+
+  // Actualizar modalLayout con los cambios anteriores para el siguiente paso
+  const currentModalLayout = findNode(updatedTree, modalLayoutId)
+  if (!currentModalLayout) return updatedTree
+
+  // --- Sincronizar __showActions ---
+  if (newProps.__showActions !== undefined && newProps.__showActions !== currentModalLayout.props.__showActions) {
+    const hasActions = currentModalLayout.children.some((c) => c.type === 'modal-actions')
+    if (newProps.__showActions && !hasActions) {
+      // Agregar actions al final
+      const actions = createNode('modal-actions', landingName)
+      updatedTree = updateInTree(updatedTree, modalLayoutId, (n) => ({
+        ...n,
+        children: [...n.children, actions],
+      }))
+    } else if (!newProps.__showActions && hasActions) {
+      // Eliminar actions
+      updatedTree = updateInTree(updatedTree, modalLayoutId, (n) => ({
+        ...n,
+        children: n.children.filter((c) => c.type !== 'modal-actions'),
+      }))
+    }
+  }
+
+  return updatedTree
+}
+
 // --- Store ---
 
 const useLandingStore = create<LandingState>()(
@@ -380,6 +439,21 @@ const useLandingStore = create<LandingState>()(
           if (node && node.type === 'tab-layout') {
             const { landingName } = get()
             const updatedTree = syncTabLayoutChildren(get().tree, nodeId, newProps, landingName)
+            const updater = (n: TreeNode): TreeNode => ({
+              ...n,
+              props: { ...n.props, ...newProps },
+            })
+            set({ tree: updateInTree(updatedTree, nodeId, updater) })
+            return
+          }
+        }
+
+        // Lógica reactiva para modal-layout: sincronizar header y actions
+        if ('__showHeader' in newProps || '__showActions' in newProps) {
+          const node = findNode(get().tree, nodeId)
+          if (node && node.type === 'modal-layout') {
+            const { landingName } = get()
+            const updatedTree = syncModalLayoutChildren(get().tree, nodeId, newProps, landingName)
             const updater = (n: TreeNode): TreeNode => ({
               ...n,
               props: { ...n.props, ...newProps },
