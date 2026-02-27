@@ -278,6 +278,53 @@ function PropField({
             )
 
         case 'number':
+        case 'stepper': {
+            const numValue = value ?? (schema.default as number)
+            const min = schema.min ?? 0
+            const max = schema.max ?? 99
+
+            if (schema.type === 'stepper') {
+                return (
+                    <div>
+                        <label className="text-xs text-slate-600 dark:text-slate-400 mb-1.5 block drop-shadow-sm">{schema.label}</label>
+                        {schema.description && (
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-2 leading-tight">{schema.description}</p>
+                        )}
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                disabled={numValue <= min}
+                                onClick={() => onChange(Math.max(min, numValue - 1))}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/60 dark:bg-black/20
+                                    border border-black/5 dark:border-white/10 text-slate-700 dark:text-slate-300
+                                    hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500
+                                    disabled:opacity-30 disabled:cursor-not-allowed
+                                    transition-all backdrop-blur-sm shadow-inner text-sm font-bold"
+                            >
+                                −
+                            </button>
+                            <div className="flex-1 text-center py-1.5 rounded-lg bg-white/60 dark:bg-black/20
+                                border border-black/5 dark:border-white/10 text-sm font-semibold
+                                text-slate-900 dark:text-white backdrop-blur-sm shadow-inner tabular-nums">
+                                {numValue}
+                            </div>
+                            <button
+                                type="button"
+                                disabled={numValue >= max}
+                                onClick={() => onChange(Math.min(max, numValue + 1))}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/60 dark:bg-black/20
+                                    border border-black/5 dark:border-white/10 text-slate-700 dark:text-slate-300
+                                    hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500
+                                    disabled:opacity-30 disabled:cursor-not-allowed
+                                    transition-all backdrop-blur-sm shadow-inner text-sm font-bold"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+
             return (
                 <div>
                     <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block drop-shadow-sm">{schema.label}</label>
@@ -290,6 +337,7 @@ function PropField({
                     />
                 </div>
             )
+        }
 
         case 'object':
             return (

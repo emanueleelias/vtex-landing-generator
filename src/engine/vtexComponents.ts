@@ -30,6 +30,12 @@ import {
     icon,
     iconCaret,
     video,
+    tabLayout,
+    tabList,
+    tabListItem,
+    tabListItemChildren,
+    tabContent,
+    tabContentItem,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -55,6 +61,12 @@ const vtexComponents: VtexComponentDefinition[] = [
     disclosureTrigger,
     disclosureContent,
     disclosureStateIndicator,
+    tabLayout,
+    tabList,
+    tabListItem,
+    tabListItemChildren,
+    tabContent,
+    tabContentItem,
 ]
 export default vtexComponents
 

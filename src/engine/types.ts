@@ -6,13 +6,15 @@
 
 export interface PropSchema {
   name: string
-  type: 'string' | 'enum' | 'boolean' | 'number' | 'object'
+  type: 'string' | 'enum' | 'boolean' | 'number' | 'object' | 'stepper'
   label: string
   default: string | boolean | number | Record<string, any>
   options?: { value: string; label: string }[]
   objectSchema?: PropSchema[]
   forceRender?: boolean
   description?: string
+  min?: number
+  max?: number
 }
 
 export interface VtexComponentDefinition {

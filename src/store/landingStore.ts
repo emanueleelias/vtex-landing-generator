@@ -200,6 +200,103 @@ function createNode(componentType: string, landingName: string): TreeNode {
   return node
 }
 
+/**
+ * Sincroniza los hijos del tab-layout al cambiar __tabCount o __useItemChildren.
+ */
+function syncTabLayoutChildren(
+  tree: TreeNode[],
+  tabLayoutId: string,
+  newProps: Record<string, any>,
+  landingName: string
+): TreeNode[] {
+  const tabLayout = findNode(tree, tabLayoutId)
+  if (!tabLayout) return tree
+
+  const tabList = tabLayout.children.find((c) => c.type === 'tab-list')
+  const tabContent = tabLayout.children.find((c) => c.type === 'tab-content')
+  if (!tabList || !tabContent) return tree
+
+  const currentCount = tabList.children.length
+  const newCount = newProps.__tabCount !== undefined ? Number(newProps.__tabCount) : currentCount
+
+  const currentUseChildren = tabLayout.props.__useItemChildren ?? false
+  const newUseChildren = newProps.__useItemChildren !== undefined ? newProps.__useItemChildren : currentUseChildren
+
+  const listItemType = newUseChildren ? 'tab-list.item.children' : 'tab-list.item'
+
+  let updatedTree = tree
+
+  // --- Sincronizar cantidad de tabs ---
+  if (newCount > currentCount) {
+    // Agregar items nuevos
+    for (let i = currentCount + 1; i <= newCount; i++) {
+      const tabId = `tab${i}`
+      const listItem = createNode(listItemType, landingName)
+      listItem.props = {
+        ...listItem.props,
+        tabId,
+        ...(listItemType === 'tab-list.item' ? { label: `Tab ${i}` } : {}),
+      }
+
+      const contentItem = createNode('tab-content.item', landingName)
+      contentItem.props = { ...contentItem.props, tabId }
+
+      updatedTree = updateInTree(updatedTree, tabList.id, (n) => ({
+        ...n,
+        children: [...n.children, listItem],
+      }))
+      updatedTree = updateInTree(updatedTree, tabContent.id, (n) => ({
+        ...n,
+        children: [...n.children, contentItem],
+      }))
+    }
+  } else if (newCount < currentCount) {
+    // Eliminar los últimos items
+    updatedTree = updateInTree(updatedTree, tabList.id, (n) => ({
+      ...n,
+      children: n.children.slice(0, newCount),
+    }))
+    updatedTree = updateInTree(updatedTree, tabContent.id, (n) => ({
+      ...n,
+      children: n.children.slice(0, newCount),
+    }))
+  }
+
+  // --- Sincronizar tipo de item (tab-list.item vs tab-list.item.children) ---
+  if (newProps.__useItemChildren !== undefined && newUseChildren !== currentUseChildren) {
+    updatedTree = updateInTree(updatedTree, tabList.id, (n) => ({
+      ...n,
+      children: n.children.map((child, idx) => {
+        const preservedProps: Record<string, any> = {}
+        if (child.props.tabId) preservedProps.tabId = child.props.tabId
+        if (child.props.defaultActiveTab) preservedProps.defaultActiveTab = child.props.defaultActiveTab
+        if (child.props.blockClass) preservedProps.blockClass = child.props.blockClass
+        if (child.props.__title) preservedProps.__title = child.props.__title
+
+        if (newUseChildren) {
+          // Cambiar a tab-list.item.children
+          return {
+            ...child,
+            type: 'tab-list.item.children',
+            props: preservedProps,
+            children: child.children || [],
+          }
+        } else {
+          // Cambiar a tab-list.item
+          return {
+            ...child,
+            type: 'tab-list.item',
+            props: { ...preservedProps, label: `Tab ${idx + 1}` },
+            children: [],
+          }
+        }
+      }),
+    }))
+  }
+
+  return updatedTree
+}
+
 // --- Store ---
 
 const useLandingStore = create<LandingState>()(
@@ -277,6 +374,21 @@ const useLandingStore = create<LandingState>()(
       },
 
       updateNodeProps: (nodeId, newProps) => {
+        // Lógica reactiva para tab-layout: sincronizar hijos al cambiar __tabCount o __useItemChildren
+        if ('__tabCount' in newProps || '__useItemChildren' in newProps) {
+          const node = findNode(get().tree, nodeId)
+          if (node && node.type === 'tab-layout') {
+            const { landingName } = get()
+            const updatedTree = syncTabLayoutChildren(get().tree, nodeId, newProps, landingName)
+            const updater = (n: TreeNode): TreeNode => ({
+              ...n,
+              props: { ...n.props, ...newProps },
+            })
+            set({ tree: updateInTree(updatedTree, nodeId, updater) })
+            return
+          }
+        }
+
         const updater = (node: TreeNode): TreeNode => ({
           ...node,
           props: { ...node.props, ...newProps },
