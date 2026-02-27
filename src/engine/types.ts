@@ -11,6 +11,8 @@ export interface PropSchema {
   default: string | boolean | number | Record<string, any>
   options?: { value: string; label: string }[]
   objectSchema?: PropSchema[]
+  forceRender?: boolean
+  description?: string
 }
 
 export interface VtexComponentDefinition {
@@ -21,6 +23,8 @@ export interface VtexComponentDefinition {
   acceptsChildren: boolean
   acceptsBlocks?: boolean
   propsSchema: PropSchema[]
+  childrenTemplate?: { type: string; props?: Record<string, any> }[]
+  hidden?: boolean
 }
 
 // --- Árbol de nodos ---

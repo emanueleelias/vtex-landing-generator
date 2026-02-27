@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { TreeNode } from '../engine/types'
+import { getComponentDefinition } from '../engine/vtexComponents'
 
 export type GenerationMode = 'landing' | 'block'
 
@@ -176,14 +177,27 @@ function removeAndGetNode(tree: TreeNode[], id: string): { newTree: TreeNode[], 
 
 function createNode(componentType: string, landingName: string): TreeNode {
   const id = generateNodeId()
+  const definition = getComponentDefinition(componentType)
 
-  return {
+  const node: TreeNode = {
     id,
     type: componentType,
     identifier: landingName,
     props: {},
     children: [],
   }
+
+  if (definition?.childrenTemplate) {
+    node.children = definition.childrenTemplate.map((childDef) => {
+      const childNode = createNode(childDef.type, landingName)
+      if (childDef.props) {
+        childNode.props = { ...childNode.props, ...childDef.props }
+      }
+      return childNode
+    })
+  }
+
+  return node
 }
 
 // --- Store ---

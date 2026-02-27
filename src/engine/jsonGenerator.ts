@@ -37,26 +37,35 @@ function cleanProps(props: Record<string, any>, nodeType: string): Record<string
   const definition = getComponentDefinition(nodeType)
   const clean: Record<string, any> = {}
 
+  // 1. Procesar props explícitas en el store
   for (const [key, value] of Object.entries(props)) {
     if (key.startsWith('__')) continue
-
-    // Filtros genéricos para valores vacíos (strings vacíos únicamente)
     if (value === '') continue
 
-    // Excepción: la imagen siempre debe renderizar su src por defecto
     if (nodeType === 'image' && key === 'src') {
       clean[key] = value
       continue
     }
 
-    // Filtrar si el valor es idéntico a su default
     if (definition) {
       const propDef = definition.propsSchema.find((p) => p.name === key)
-      if (propDef && isDeepEqual(propDef.default, value)) continue
+      if (propDef) {
+        if (!propDef.forceRender && isDeepEqual(propDef.default, value)) continue
+      }
     }
 
     clean[key] = value
   }
+
+  // 2. Inyectar forzosamente (forceRender) aquellas props que no se hayan definido en el store
+  if (definition) {
+    for (const propDef of definition.propsSchema) {
+      if (propDef.forceRender && clean[propDef.name] === undefined && props[propDef.name] === undefined) {
+        clean[propDef.name] = propDef.default
+      }
+    }
+  }
+
   return clean
 }
 
@@ -70,23 +79,39 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
 
     // Procesar children
     if (node.children && node.children.length > 0) {
-      entry.children = node.children.map((child) => {
-        // Si el hijo es una referencia, usar su targetKey directamente
-        if (child.type === '__block-reference' && child.props.__targetKey) {
-          return child.props.__targetKey
-        }
-        return nodeKey(child)
+      const validChildren = node.children.filter((child) => {
+        const childDef = getComponentDefinition(child.type)
+        const propSchema = childDef?.propsSchema.find((p) => p.name === '__topLevelOnly')
+        const isTopLevel = child.props.__topLevelOnly !== undefined ? child.props.__topLevelOnly : (propSchema?.default ?? false)
+        return !isTopLevel
       })
+      if (validChildren.length > 0) {
+        entry.children = validChildren.map((child) => {
+          // Si el hijo es una referencia, usar su targetKey directamente
+          if (child.type === '__block-reference' && child.props.__targetKey) {
+            return child.props.__targetKey
+          }
+          return nodeKey(child)
+        })
+      }
     }
 
     // Procesar blocks
     if (node.blocks && node.blocks.length > 0) {
-      entry.blocks = node.blocks.map((blockChild) => {
-        if (blockChild.type === '__block-reference' && blockChild.props.__targetKey) {
-          return blockChild.props.__targetKey
-        }
-        return nodeKey(blockChild)
+      const validBlocks = node.blocks.filter((blockChild) => {
+        const childDef = getComponentDefinition(blockChild.type)
+        const propSchema = childDef?.propsSchema.find((p) => p.name === '__topLevelOnly')
+        const isTopLevel = blockChild.props.__topLevelOnly !== undefined ? blockChild.props.__topLevelOnly : (propSchema?.default ?? false)
+        return !isTopLevel
       })
+      if (validBlocks.length > 0) {
+        entry.blocks = validBlocks.map((blockChild) => {
+          if (blockChild.type === '__block-reference' && blockChild.props.__targetKey) {
+            return blockChild.props.__targetKey
+          }
+          return nodeKey(blockChild)
+        })
+      }
     }
 
     // Global Title

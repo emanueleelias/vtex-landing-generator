@@ -21,6 +21,14 @@ import {
     sliderLayout,
     listContextProductList,
     productSummaryShelf,
+    disclosureLayout,
+    disclosureTrigger,
+    disclosureContent,
+    disclosureStateIndicator,
+    disclosureLayoutGroup,
+    disclosureTriggerGroup,
+    icon,
+    iconCaret,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -37,6 +45,14 @@ const vtexComponents: VtexComponentDefinition[] = [
     sliderLayout,
     listContextProductList,
     productSummaryShelf,
+    disclosureLayout,
+    disclosureTrigger,
+    disclosureContent,
+    disclosureStateIndicator,
+    disclosureLayoutGroup,
+    disclosureTriggerGroup,
+    icon,
+    iconCaret,
 ]
 
 export default vtexComponents
@@ -58,7 +74,7 @@ export function getComponentsByCategory() {
         media: [],
         utility: [],
     }
-    vtexComponents.forEach((c) => {
+    vtexComponents.filter(c => !c.hidden).forEach((c) => {
         if (!grouped[c.category]) {
             grouped[c.category] = []
         }

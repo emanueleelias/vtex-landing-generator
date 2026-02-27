@@ -250,11 +250,16 @@ function PropField({
 
         case 'boolean':
             return (
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/5 backdrop-blur-sm shadow-inner">
-                    <div className="flex flex-col">
-                        <span className="text-xs text-slate-700 dark:text-slate-300 drop-shadow-sm">{schema.label}</span>
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/5 backdrop-blur-sm shadow-inner group">
+                    <div className="flex flex-col pr-4">
+                        <div className="flex flex-col">
+                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300 drop-shadow-sm">{schema.label}</span>
+                            {schema.description && (
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">{schema.description}</span>
+                            )}
+                        </div>
                         {value === undefined && (
-                            <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500/70 italic mt-1">
                                 Default: {schema.default ? 'true' : 'false'}
                             </span>
                         )}
@@ -262,7 +267,7 @@ function PropField({
                     <label className="relative cursor-pointer">
                         <input
                             type="checkbox"
-                            checked={value ?? false}
+                            checked={value ?? Boolean(schema.default)}
                             onChange={(e) => onChange(e.target.checked)}
                             className="sr-only peer"
                         />
