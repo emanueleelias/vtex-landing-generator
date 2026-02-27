@@ -21,6 +21,7 @@ import {
   Video,
   Smile,
   ChevronDown,
+  ChevronRight,
   SquarePlus,
   Layers,
   ToggleLeft,
@@ -28,7 +29,7 @@ import {
   AppWindowMac,
   Split,
 } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 
 const iconMap: Record<string, React.ElementType> = {
@@ -48,6 +49,7 @@ const iconMap: Record<string, React.ElementType> = {
   Video,
   Smile,
   ChevronDown,
+  ChevronRight,
   SquarePlus,
   Layers,
   ToggleLeft,
@@ -106,6 +108,14 @@ function DraggableComponent({ definition }: { definition: VtexComponentDefinitio
 
 export default function BlockLibrary() {
   const grouped = getComponentsByCategory()
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }))
+  }
 
   return (
     <div className="flex flex-col h-full relative z-10">
@@ -118,22 +128,38 @@ export default function BlockLibrary() {
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-4">
-        {Object.entries(grouped).map(([category, components]) => (
-          <div key={category}>
-            <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-500 uppercase tracking-wider mb-2 px-1">
-              {categoryLabels[category] || category}
-            </h3>
-            <div className="space-y-1.5">
-              {components.map((definition) => (
-                <DraggableComponent
-                  key={definition.type}
-                  definition={definition}
-                />
-              ))}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        {Object.entries(grouped).map(([category, components]) => {
+          const isExpanded = expandedCategories[category] || false
+          return (
+            <div key={category} className="border-b border-black/5 dark:border-white/5 pb-2">
+              <button
+                onClick={() => toggleCategory(category)}
+                className="w-full flex items-center justify-between py-2 px-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors group"
+              >
+                <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-500 uppercase tracking-wider">
+                  {categoryLabels[category] || category}
+                </h3>
+                {isExpanded ? (
+                  <ChevronDown size={14} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                ) : (
+                  <ChevronRight size={14} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                )}
+              </button>
+              
+              {isExpanded && (
+                <div className="space-y-1.5 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                  {components.map((definition) => (
+                    <DraggableComponent
+                      key={definition.type}
+                      definition={definition}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
