@@ -53,7 +53,7 @@ const iconMap: Record<string, React.ElementType> = {
 const categoryLabels: Record<string, string> = {
   layout: 'Layout',
   content: 'Contenido',
-  media: 'Media',
+  product: 'Producto',
   utility: 'Utilidades',
 }
 

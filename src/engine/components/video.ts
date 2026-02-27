@@ -4,7 +4,7 @@ export const video: VtexComponentDefinition = {
     type: 'video',
     label: 'Video',
     icon: 'Video',
-    category: 'media',
+    category: 'content',
     acceptsChildren: false,
     propsSchema: [
         { name: 'src', type: 'string', label: 'Source (URL)', default: '' },

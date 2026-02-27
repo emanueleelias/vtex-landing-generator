@@ -41,22 +41,21 @@ const vtexComponents: VtexComponentDefinition[] = [
     richText,
     image,
     video,
+    icon,
+    iconCaret,
     stackLayout,
     stickyLayout,
     blockReference,
     sliderLayout,
-  listContextProductList,
-  productSummaryShelf,
-  disclosureLayout,
-  disclosureTrigger,
-  disclosureContent,
-  disclosureStateIndicator,
-  disclosureLayoutGroup,
+    listContextProductList,
+    productSummaryShelf,
+    disclosureLayoutGroup,
     disclosureTriggerGroup,
-    icon,
-    iconCaret,
+    disclosureLayout,
+    disclosureTrigger,
+    disclosureContent,
+    disclosureStateIndicator,
 ]
-
 export default vtexComponents
 
 /**
@@ -73,7 +72,7 @@ export function getComponentsByCategory() {
     const grouped: Record<string, VtexComponentDefinition[]> = {
         layout: [],
         content: [],
-        media: [],
+        product: [],
         utility: [],
     }
     vtexComponents.filter(c => !c.hidden).forEach((c) => {

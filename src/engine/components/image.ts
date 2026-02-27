@@ -4,7 +4,7 @@ export const image: VtexComponentDefinition = {
     type: 'image',
     label: 'Image',
     icon: 'ImageIcon',
-    category: 'media',
+    category: 'content',
     acceptsChildren: false,
     propsSchema: [
         { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },

@@ -4,7 +4,7 @@ export const disclosureStateIndicator: VtexComponentDefinition = {
     type: 'disclosure-state-indicator',
     label: 'Disclosure State Indicator',
     icon: 'ToggleLeft',
-    category: 'utility',
+    category: 'layout',
     acceptsChildren: false,
     propsSchema: [
         {

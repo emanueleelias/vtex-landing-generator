@@ -4,7 +4,7 @@ export const iconCaret: VtexComponentDefinition = {
     type: 'icon-caret',
     label: 'Icon Caret',
     icon: 'ChevronDown',
-    category: 'media',
+    category: 'content',
     acceptsChildren: false,
     propsSchema: [
         {

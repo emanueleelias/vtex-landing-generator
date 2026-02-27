@@ -4,7 +4,7 @@ export const productSummaryShelf: VtexComponentDefinition = {
     type: 'product-summary.shelf',
     label: 'Product Summary',
     icon: 'Package',
-    category: 'layout',
+    category: 'product',
     acceptsChildren: true,
     acceptsBlocks: false,
     propsSchema: [

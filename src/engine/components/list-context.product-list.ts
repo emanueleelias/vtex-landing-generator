@@ -4,7 +4,7 @@ export const listContextProductList: VtexComponentDefinition = {
     type: 'list-context.product-list',
     label: 'Product List',
     icon: 'ListTree',
-    category: 'content',
+    category: 'product',
     acceptsChildren: true,
     acceptsBlocks: true,
     propsSchema: [

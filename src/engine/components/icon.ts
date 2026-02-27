@@ -4,7 +4,7 @@ export const icon: VtexComponentDefinition = {
     type: 'icon',
     label: 'Icon',
     icon: 'Smile',
-    category: 'media',
+    category: 'content',
     acceptsChildren: false,
     propsSchema: [
         {
