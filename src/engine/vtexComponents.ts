@@ -42,6 +42,10 @@ import {
   modalContent,
   modalActions,
   modalActionsClose,
+  conditionLayoutProduct,
+  conditionLayoutBinding,
+  conditionLayoutCategory,
+  conditionLayoutTelemarketing,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -79,6 +83,10 @@ const vtexComponents: VtexComponentDefinition[] = [
   modalContent,
   modalActions,
   modalActionsClose,
+  conditionLayoutProduct,
+  conditionLayoutBinding,
+  conditionLayoutCategory,
+  conditionLayoutTelemarketing,
 ]
 export default vtexComponents
 

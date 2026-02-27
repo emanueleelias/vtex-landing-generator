@@ -6,11 +6,12 @@
 
 export interface PropSchema {
   name: string
-  type: 'string' | 'enum' | 'boolean' | 'number' | 'object' | 'stepper'
+  type: 'string' | 'enum' | 'boolean' | 'number' | 'object' | 'stepper' | 'conditions'
   label: string
-  default: string | boolean | number | Record<string, any>
+  default: string | boolean | number | Record<string, any> | undefined | any[]
   options?: { value: string; label: string }[]
   objectSchema?: PropSchema[]
+  conditionsContext?: 'product' | 'binding' | 'category' | 'telemarketing'
   forceRender?: boolean
   description?: string
   min?: number
@@ -21,7 +22,7 @@ export interface VtexComponentDefinition {
   type: string
   label: string
   icon: string
-  category: 'layout' | 'content' | 'media' | 'utility'
+  category: 'layout' | 'content' | 'media' | 'utility' | 'product'
   acceptsChildren: boolean
   acceptsBlocks?: boolean
   propsSchema: PropSchema[]
