@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const tabLayout: VtexComponentDefinition = {
     type: 'tab-layout',
     label: 'Tab Layout',
-    icon: 'FolderTabs',
+    icon: 'Library',
     category: 'layout',
     acceptsChildren: true,
     childrenTemplate: [

@@ -24,6 +24,7 @@ import {
   SquarePlus,
   Layers,
   ToggleLeft,
+  Library,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -48,6 +49,7 @@ const iconMap: Record<string, React.ElementType> = {
   SquarePlus,
   Layers,
   ToggleLeft,
+  Library,
 }
 
 const categoryLabels: Record<string, string> = {
