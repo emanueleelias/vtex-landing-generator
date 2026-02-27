@@ -46,6 +46,13 @@ import {
   conditionLayoutBinding,
   conditionLayoutCategory,
   conditionLayoutTelemarketing,
+  productBrand,
+  productDescription,
+  productName,
+  productIdentifierProduct,
+  productAvailability,
+  productImages,
+  backToTopButton,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -66,7 +73,14 @@ const vtexComponents: VtexComponentDefinition[] = [
   tabLayout,
   modalTrigger,
   listContextProductList,
+  productBrand,
+  productDescription,
+  productName,
+  productIdentifierProduct,
+  productAvailability,
+  productImages,
   productSummaryShelf,
+  backToTopButton,
   disclosureLayoutGroup,
   disclosureTriggerGroup,
   disclosureLayout,

@@ -28,6 +28,13 @@ import {
   Library,
   AppWindowMac,
   Split,
+  Tag,
+  FileText,
+  CaseSensitive,
+  Barcode,
+  CheckCircle2,
+  Images,
+  ArrowUpCircle,
 } from 'lucide-react'
 import React, { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -56,6 +63,13 @@ const iconMap: Record<string, React.ElementType> = {
   Library,
   AppWindowMac,
   Split,
+  Tag,
+  FileText,
+  CaseSensitive,
+  Barcode,
+  CheckCircle2,
+  Images,
+  ArrowUpCircle,
 }
 
 const categoryLabels: Record<string, string> = {
