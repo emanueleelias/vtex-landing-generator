@@ -53,6 +53,11 @@ import {
   productAvailability,
   productImages,
   backToTopButton,
+  productSummaryName,
+  productSummaryImage,
+  productSummaryDescription,
+  productSummaryBuyButton,
+  addToCartButton,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -80,6 +85,11 @@ const vtexComponents: VtexComponentDefinition[] = [
   productAvailability,
   productImages,
   productSummaryShelf,
+  productSummaryName,
+  productSummaryImage,
+  productSummaryDescription,
+  productSummaryBuyButton,
+  addToCartButton,
   backToTopButton,
   disclosureLayoutGroup,
   disclosureTriggerGroup,

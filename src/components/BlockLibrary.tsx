@@ -35,6 +35,7 @@ import {
   CheckCircle2,
   Images,
   ArrowUpCircle,
+  ShoppingCart,
 } from 'lucide-react'
 import React, { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -70,6 +71,7 @@ const iconMap: Record<string, React.ElementType> = {
   CheckCircle2,
   Images,
   ArrowUpCircle,
+  ShoppingCart,
 }
 
 const categoryLabels: Record<string, string> = {
