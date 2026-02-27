@@ -51,10 +51,10 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 const categoryLabels: Record<string, string> = {
-  layout: '📐 Layout',
-  content: '📝 Contenido',
-  media: '🖼️ Media',
-  utility: '🔗 Utilidades',
+  layout: 'Layout',
+  content: 'Contenido',
+  media: 'Media',
+  utility: 'Utilidades',
 }
 
 function DraggableComponent({ definition }: { definition: VtexComponentDefinition }) {
