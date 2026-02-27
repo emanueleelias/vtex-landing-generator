@@ -29,6 +29,7 @@ import {
     disclosureTriggerGroup,
     icon,
     iconCaret,
+    video,
 } from './components'
 
 const vtexComponents: VtexComponentDefinition[] = [
@@ -39,6 +40,7 @@ const vtexComponents: VtexComponentDefinition[] = [
     customContainer,
     richText,
     image,
+    video,
     stackLayout,
     stickyLayout,
     blockReference,

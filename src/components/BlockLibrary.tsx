@@ -18,6 +18,12 @@ import {
   ListTree,
   Package,
   GalleryHorizontalEnd,
+  Video,
+  Smile,
+  ChevronDown,
+  SquarePlus,
+  Layers,
+  ToggleLeft,
 } from 'lucide-react'
 import React from 'react'
 import { useDraggable } from '@dnd-kit/core'
@@ -36,6 +42,12 @@ const iconMap: Record<string, React.ElementType> = {
   ListTree,
   Package,
   GalleryHorizontalEnd,
+  Video,
+  Smile,
+  ChevronDown,
+  SquarePlus,
+  Layers,
+  ToggleLeft,
 }
 
 const categoryLabels: Record<string, string> = {

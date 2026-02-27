@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const iconCaret: VtexComponentDefinition = {
     type: 'icon-caret',
     label: 'Icon Caret',
-    icon: 'ImageIcon',
+    icon: 'ChevronDown',
     category: 'media',
     acceptsChildren: false,
     propsSchema: [

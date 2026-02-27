@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const disclosureStateIndicator: VtexComponentDefinition = {
     type: 'disclosure-state-indicator',
     label: 'Disclosure State Indicator',
-    icon: 'Box',
+    icon: 'ToggleLeft',
     category: 'utility',
     acceptsChildren: false,
     propsSchema: [

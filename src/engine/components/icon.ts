@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const icon: VtexComponentDefinition = {
     type: 'icon',
     label: 'Icon',
-    icon: 'ImageIcon',
+    icon: 'Smile',
     category: 'media',
     acceptsChildren: false,
     propsSchema: [

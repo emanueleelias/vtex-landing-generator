@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const disclosureLayout: VtexComponentDefinition = {
     type: 'disclosure-layout',
     label: 'Disclosure Layout',
-    icon: 'ListTree',
+    icon: 'SquarePlus',
     category: 'layout',
     acceptsChildren: true,
     childrenTemplate: [

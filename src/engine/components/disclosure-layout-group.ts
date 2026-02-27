@@ -3,7 +3,7 @@ import type { VtexComponentDefinition } from '../types'
 export const disclosureLayoutGroup: VtexComponentDefinition = {
     type: 'disclosure-layout-group',
     label: 'Disclosure Group',
-    icon: 'ListTree',
+    icon: 'Layers',
     category: 'layout',
     acceptsChildren: true,
     propsSchema: [
