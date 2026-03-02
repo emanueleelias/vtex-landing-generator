@@ -48,7 +48,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
 
     // Colores por categoría adaptados a Glassmorphism dual
     const categoryColors: Record<string, { border: string; bg: string; badge: string }> = {
-        layout: { border: 'border-blue-500/30', bg: 'bg-blue-500/10', badge: 'bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30' },
+        layout: { border: 'border-teal-500/30', bg: 'bg-teal-500/10', badge: 'bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30' },
         content: { border: 'border-amber-500/30', bg: 'bg-amber-500/10', badge: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' },
         media: { border: 'border-purple-500/30', bg: 'bg-purple-500/10', badge: 'bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30' },
         utility: { border: 'border-cyan-500/30', bg: 'bg-cyan-500/10', badge: 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30' },
