@@ -14,7 +14,7 @@ import {
 } from '@dnd-kit/core'
 import { useState, useEffect } from 'react'
 import { getComponentDefinition } from './engine/vtexComponents'
-import { Box, Sun, Moon, FolderOpen, Trash2, X } from 'lucide-react'
+import { Box, Sun, Moon, FolderOpen, Trash2, X, AppWindowMac } from 'lucide-react'
 
 // Componente simple para el DragOverlay
 function DragOverlayCard({ activeData }: { activeData: any }) {
@@ -127,7 +127,7 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-sm">V</span>
+                <AppWindowMac size={18} className="text-white" strokeWidth={2.5} />
               </div>
               <h1 className="text-lg font-semibold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
                 Landing Generator
