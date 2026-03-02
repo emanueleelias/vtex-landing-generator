@@ -17,12 +17,13 @@ export default function Canvas() {
     }
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex items-center gap-2 px-4 pt-3 pb-0 z-10 relative">
-                <div className="flex items-center gap-2 px-4 py-2 glass-panel border-b-0 rounded-t-xl text-sm font-medium text-slate-800 dark:text-slate-200">
-                    <LayoutList size={16} />
+        <div className="flex flex-col h-full bg-white/40 dark:bg-black/20 rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden backdrop-blur-md shadow-inner relative z-0">
+            {/* Header unificado */}
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-black/5 dark:border-white/5">
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    <LayoutList size={18} className="text-teal-500" />
                     Estructura
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400">
+                    <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                         {countNodes(tree)}
                     </span>
                 </div>
@@ -30,7 +31,7 @@ export default function Canvas() {
 
             {/* Contenido */}
             <div
-                className="flex-1 bg-white/40 dark:bg-black/20 mx-4 mb-4 rounded-b-xl rounded-tr-xl border border-black/5 dark:border-white/5 overflow-y-auto relative z-0 backdrop-blur-md shadow-inner"
+                className="flex-1 overflow-y-auto relative"
                 onClick={(e) => {
                     if (e.target === e.currentTarget) selectNode(null)
                 }}

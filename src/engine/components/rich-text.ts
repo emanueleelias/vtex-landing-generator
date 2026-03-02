@@ -7,6 +7,7 @@ export const richText: VtexComponentDefinition = {
     category: 'content',
     acceptsChildren: false,
     propsSchema: [
+        { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },
         { name: 'text', type: 'string', label: 'Texto (Markdown)', default: '' },
         {
             name: 'textAlignment',
@@ -32,6 +33,5 @@ export const richText: VtexComponentDefinition = {
         },
         { name: 'textColor', type: 'string', label: 'Text Color (Tachyon)', default: 'c-on-base' },
         { name: 'font', type: 'string', label: 'Font (Tachyon)', default: 't-body' },
-        { name: 'blockClass', type: 'string', label: 'Block Class', default: '' },
     ],
 }

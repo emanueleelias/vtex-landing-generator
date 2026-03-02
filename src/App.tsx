@@ -259,7 +259,7 @@ export default function App() {
           </aside>
 
           {/* Panel central: Canvas */}
-          <main className="flex-1 flex flex-col overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 bg-white/20 dark:bg-black/10 shadow-inner">
+          <main className="flex-1 flex flex-col overflow-hidden">
             <Canvas />
           </main>
 
