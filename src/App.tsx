@@ -254,7 +254,7 @@ export default function App() {
         {/* Layout principal 3 paneles */}
         <div className="flex flex-1 overflow-hidden mt-4 gap-4 px-4 pb-4">
           {/* Panel izquierdo: Biblioteca de bloques */}
-          <aside className="w-64 flex-shrink-0 glass-panel border-b-0 rounded-2xl flex flex-col z-10 shadow-2xl overflow-hidden">
+          <aside className="w-80 flex-shrink-0 glass-panel border-b-0 rounded-2xl flex flex-col z-10 shadow-2xl overflow-hidden">
             <BlockLibrary />
           </aside>
 
