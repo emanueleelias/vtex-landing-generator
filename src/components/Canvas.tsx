@@ -22,7 +22,7 @@ export default function Canvas() {
                 <div className="flex items-center gap-2 px-4 py-2 glass-panel border-b-0 rounded-t-xl text-sm font-medium text-slate-800 dark:text-slate-200">
                     <LayoutList size={16} />
                     Estructura
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-pink-500/20 text-pink-600 dark:text-pink-400">
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400">
                         {countNodes(tree)}
                     </span>
                 </div>
@@ -48,7 +48,7 @@ export default function Canvas() {
                         <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Sin componentes</p>
                         <p className="text-xs mt-1 text-center px-8 relative z-20 pointer-events-none text-slate-600 dark:text-slate-400">
                             Seleccioná o arrastrá un componente del panel izquierdo para comenzar.
-                            Usá <span className="text-pink-600 dark:text-pink-400/80 font-medium">Responsive Desktop</span> y <span className="text-pink-600 dark:text-pink-400/80 font-medium">Responsive Mobile</span> para separar las vistas.
+                            Usá <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Desktop</span> y <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Mobile</span> para separar las vistas.
                         </p>
                     </div>
                 ) : (

@@ -19,7 +19,7 @@ body {
 
 .dark body {
   color: #E2E8F0;
-  background-color: #050510;
+  background-color: #0a0a0f;
 }
 
 #root {
@@ -68,7 +68,7 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(247, 25, 99, 0.3);
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.3);
 }
 
 /* Glassmorphism Classes reutilizables */
@@ -96,7 +96,7 @@ select:focus {
 }
 
 .dark .mesh-bg {
-  background-color: #050510;
+  background-color: #0a0a0f;
 }
 
 .mesh-blob-1,
@@ -124,7 +124,7 @@ select:focus {
   right: -10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(244, 114, 182, 0.3) 0%, rgba(244, 114, 182, 0) 70%);
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, rgba(20, 184, 166, 0) 70%);
   animation-duration: 30s;
   animation-delay: -5s;
 }
@@ -141,15 +141,15 @@ select:focus {
 
 /* Modo oscuro (colores profundos) */
 .dark .mesh-blob-1 {
-  background: radial-gradient(circle, rgba(20, 32, 50, 0.8) 0%, rgba(20, 32, 50, 0) 70%);
+  background: radial-gradient(circle, rgba(10, 10, 15, 0.8) 0%, rgba(10, 10, 15, 0) 70%);
 }
 
 .dark .mesh-blob-2 {
-  background: radial-gradient(circle, rgba(247, 25, 99, 0.15) 0%, rgba(247, 25, 99, 0) 70%);
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, rgba(20, 184, 166, 0) 70%);
 }
 
 .dark .mesh-blob-3 {
-  background: radial-gradient(circle, rgba(29, 78, 216, 0.1) 0%, rgba(29, 78, 216, 0) 70%);
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.1) 0%, rgba(13, 148, 136, 0) 70%);
 }
 
 @keyframes float {
@@ -185,6 +185,6 @@ select:focus {
 
 /* Indicador de drag (DnD) version Glass */
 .drag-over {
-  border-color: rgba(247, 25, 99, 0.6) !important;
-  background-color: rgba(247, 25, 99, 0.1) !important;
+  border-color: rgba(20, 184, 166, 0.6) !important;
+  background-color: rgba(20, 184, 166, 0.1) !important;
 }

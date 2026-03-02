@@ -65,7 +65,7 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                         ? `${colors.bg} ${colors.border} ring-1 ring-${colors.border.split('-')[1]}-500/50 shadow-lg`
                         : 'bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/10 dark:hover:bg-black/40'
                     }
-          ${isDragging ? 'opacity-40 border-dashed border-pink-500' : ''}`}
+          ${isDragging ? 'opacity-40 border-dashed border-teal-500' : ''}`}
                 onClick={() => selectNode(node.id)}
             >
                 {/* Grip */}

@@ -18,7 +18,7 @@ import { Box, Sun, Moon, FolderOpen, Trash2, X } from 'lucide-react'
 
 // Componente simple para el DragOverlay
 function DragOverlayCard({ activeData }: { activeData: any }) {
-  if (!activeData) return <div className="w-48 h-12 bg-slate-800 rounded-xl border border-pink-500 opacity-80" />
+  if (!activeData) return <div className="w-48 h-12 bg-slate-800 rounded-xl border border-teal-500 opacity-80" />
 
   const isNew = activeData.type === 'new-component'
   const def = isNew
@@ -26,9 +26,9 @@ function DragOverlayCard({ activeData }: { activeData: any }) {
     : getComponentDefinition(activeData.node?.type)
 
   return (
-    <div className="w-64 flex items-center gap-2 p-2.5 rounded-xl border border-pink-500 bg-slate-800 shadow-xl opacity-90 scale-105">
-      <div className="w-9 h-9 rounded-lg bg-pink-500/10 flex items-center justify-center">
-        <Box size={18} className="text-pink-400" />
+    <div className="w-64 flex items-center gap-2 p-2.5 rounded-xl border border-teal-500 bg-slate-800 shadow-xl opacity-90 scale-105">
+      <div className="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center">
+        <Box size={18} className="text-teal-400" />
       </div>
       <div className="flex-1">
         <p className="text-sm font-medium text-slate-800 dark:text-white">{def?.label || 'Componente'}</p>
@@ -126,7 +126,7 @@ export default function App() {
         <header className="flex items-center justify-between px-6 py-3 glass-panel border-b-0 rounded-b-2xl mx-4 mt-2 shadow-sm dark:shadow-2xl z-50">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-sm">V</span>
               </div>
               <h1 className="text-lg font-semibold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
@@ -141,7 +141,7 @@ export default function App() {
               <button
                 onClick={() => setGenerationMode('landing')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'landing'
-                  ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-teal-500 to-teal-500 text-teal-950 font-semibold shadow-md'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                   }`}
               >
@@ -150,7 +150,7 @@ export default function App() {
               <button
                 onClick={() => setGenerationMode('block')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${generationMode === 'block'
-                  ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-teal-500 to-teal-500 text-teal-950 font-semibold shadow-md'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
                   }`}
               >
@@ -170,7 +170,7 @@ export default function App() {
                 onChange={(e) => setLandingName(e.target.value)}
                 placeholder={generationMode === 'landing' ? 'nombre-de-la-landing' : 'identificador-del-bloque'}
                 className="bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white
-             placeholder-slate-400 dark:placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5 focus:ring-1 focus:ring-pink-500/30
+             placeholder-slate-400 dark:placeholder-slate-500 focus:border-teal-500/50 focus:bg-teal-500/5 focus:ring-1 focus:ring-teal-500/30
              transition-all w-64 backdrop-blur-sm shadow-inner"
               />
             </div>
@@ -213,7 +213,7 @@ export default function App() {
                   setProjectManagerOpen(true)
                   if (showOnboarding) dismissOnboarding()
                 }}
-                className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors shadow-sm"
+                className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-teal-500 dark:hover:text-teal-400 transition-colors shadow-sm"
                 title="Proyectos guardados"
               >
                 <FolderOpen size={18} />
@@ -228,7 +228,7 @@ export default function App() {
                   >
                     <X size={12} />
                   </button>
-                  <p className="text-xs font-semibold text-pink-500 mb-1">💾 Auto-guardado activo</p>
+                  <p className="text-xs font-semibold text-teal-500 mb-1">💾 Auto-guardado activo</p>
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
                     Tu trabajo se guarda automáticamente. Si recargás la página, todo se restaura.
                   </p>
@@ -242,7 +242,7 @@ export default function App() {
 
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors shadow-sm"
+              className="p-2 rounded-xl bg-white/40 dark:bg-black/20 border border-black/5 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-teal-500 dark:hover:text-teal-400 transition-colors shadow-sm"
               title={`Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`}
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -273,7 +273,7 @@ export default function App() {
         <footer className="absolute bottom-2 left-1/2 -translate-x-1/2 py-1.5 px-4 rounded-full text-[10px] text-slate-500 dark:text-slate-400 glass-panel flex items-center gap-2 shadow-lg">
           <span>&copy; {new Date().getFullYear()} Emanuele, Elias Daniel</span>
           <span className="text-slate-400 dark:text-slate-600">•</span>
-          <span className="font-mono text-pink-500 dark:text-pink-400/80">v{__APP_VERSION__}</span>
+          <span className="font-mono text-teal-500 dark:text-teal-400/80">v{__APP_VERSION__}</span>
         </footer>
       </div>
 

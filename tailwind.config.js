@@ -9,11 +9,11 @@ export default {
         extend: {
             colors: {
                 vtex: {
-                    pink: '#F71963',
-                    'pink-dark': '#D91654',
-                    blue: '#142032',
-                    'blue-light': '#1A2A42',
-                    'blue-lighter': '#243552',
+                    teal: '#14b8a6',
+                    'teal-dark': '#0d9488',
+                    blue: '#0a0a0f',
+                    'blue-light': '#12121a',
+                    'blue-lighter': '#1c1c28',
                     gray: {
                         100: '#F5F5F5',
                         200: '#E0E0E0',
@@ -23,7 +23,7 @@ export default {
                         600: '#616161',
                         700: '#424242',
                         800: '#303030',
-                        900: '#1A1A2E',
+                        900: '#16161f',
                     },
                 },
             },

@@ -65,14 +65,14 @@ export default function ExportButton() {
             case 'error':
                 return 'bg-red-600/80 hover:bg-red-700 border-red-500'
             default:
-                return 'bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 border-pink-500/30'
+                return 'bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-700 hover:to-teal-700 border-teal-500/30'
         }
     }
 
     return (
         <button
             onClick={handleExport}
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white
+            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-teal-950
         border transition-all shadow-lg ${getButtonClass()}`}
         >
             {getButtonContent()}

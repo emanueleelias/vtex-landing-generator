@@ -108,7 +108,7 @@ export default function PropertiesPanel() {
                 <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider drop-shadow-sm">
                     Propiedades
                 </h2>
-                <p className="text-xs text-pink-600 dark:text-pink-400 mt-0.5 font-medium drop-shadow-sm">
+                <p className="text-xs text-teal-600 dark:text-teal-400 mt-0.5 font-medium drop-shadow-sm">
                     {definition?.label || node.type}
                 </p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
@@ -128,8 +128,8 @@ export default function PropertiesPanel() {
                         value={node.identifier}
                         onChange={(e) => updateNodeIdentifier(node.id, e.target.value)}
                         className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
-              text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5
-              focus:ring-1 focus:ring-pink-500/30 transition-all font-mono text-xs backdrop-blur-sm shadow-inner"
+              text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-teal-500/50 focus:bg-teal-500/5
+              focus:ring-1 focus:ring-teal-500/30 transition-all font-mono text-xs backdrop-blur-sm shadow-inner"
                     />
                 </div>
 
@@ -194,8 +194,8 @@ function PropField({
     onChange: (val: any) => void
 }) {
     const baseInputClass = `w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
-    text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-pink-500/50 focus:bg-pink-500/5
-    focus:ring-1 focus:ring-pink-500/30 transition-all backdrop-blur-sm shadow-inner`
+    text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-teal-500/50 focus:bg-teal-500/5
+    focus:ring-1 focus:ring-teal-500/30 transition-all backdrop-blur-sm shadow-inner`
 
     switch (schema.type) {
         case 'string':
@@ -271,7 +271,7 @@ function PropField({
                             onChange={(e) => onChange(e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-9 h-5 bg-black/10 dark:bg-white/10 peer-checked:bg-pink-500/80 border border-black/5 dark:border-white/10 peer-checked:border-pink-400/50 rounded-full transition-colors" />
+                        <div className="w-9 h-5 bg-black/10 dark:bg-white/10 peer-checked:bg-teal-500/80 border border-black/5 dark:border-white/10 peer-checked:border-teal-400/50 rounded-full transition-colors" />
                         <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white dark:bg-slate-200 peer-checked:bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                     </label>
                 </div>
@@ -297,7 +297,7 @@ function PropField({
                                 onClick={() => onChange(Math.max(min, numValue - 1))}
                                 className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/60 dark:bg-black/20
                                     border border-black/5 dark:border-white/10 text-slate-700 dark:text-slate-300
-                                    hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500
+                                    hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-500
                                     disabled:opacity-30 disabled:cursor-not-allowed
                                     transition-all backdrop-blur-sm shadow-inner text-sm font-bold"
                             >
@@ -314,7 +314,7 @@ function PropField({
                                 onClick={() => onChange(Math.min(max, numValue + 1))}
                                 className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/60 dark:bg-black/20
                                     border border-black/5 dark:border-white/10 text-slate-700 dark:text-slate-300
-                                    hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500
+                                    hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-500
                                     disabled:opacity-30 disabled:cursor-not-allowed
                                     transition-all backdrop-blur-sm shadow-inner text-sm font-bold"
                             >
@@ -519,7 +519,7 @@ function ConditionsField({
                                     type="checkbox"
                                     checked={cond.toBe ?? true}
                                     onChange={(e) => updateCondition(idx, { toBe: e.target.checked })}
-                                    className="rounded border-black/20 text-pink-500 focus:ring-pink-500/30"
+                                    className="rounded border-black/20 text-teal-500 focus:ring-teal-500/30"
                                 />
                                 <span className="text-[10px] text-slate-700 dark:text-slate-300 uppercase tracking-widest font-semibold">To Be</span>
                             </label>
