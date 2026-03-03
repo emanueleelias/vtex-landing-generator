@@ -45,10 +45,10 @@ export default function Canvas() {
                             className="absolute inset-4 rounded-xl border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 flex items-center justify-center text-sm font-medium z-10 bg-black/5 dark:bg-slate-800/10 text-slate-600 dark:text-slate-400"
                             text="Soltá un componente aquí"
                         />
-                        <LayoutList size={48} className="mb-3 opacity-30 text-slate-800 dark:text-white" />
-                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Sin componentes</p>
-                        <p className="text-xs mt-1 text-center px-8 relative z-20 pointer-events-none text-slate-600 dark:text-slate-400">
-                            Seleccioná o arrastrá un componente del panel izquierdo para comenzar.
+                        <LayoutList size={48} className="mb-6 opacity-20 text-slate-800 dark:text-white" />
+                        <p className="text-base font-semibold text-slate-700 dark:text-slate-300 mb-2">Sin componentes</p>
+                        <p className="text-xs text-center px-12 relative z-20 pointer-events-none text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+                            Seleccioná o arrastrá un componente del panel izquierdo para comenzar.<br />
                             Usá <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Desktop</span> y <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Mobile</span> para separar las vistas.
                         </p>
                     </div>

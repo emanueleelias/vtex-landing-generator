@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import useLandingStore from '../store/landingStore'
 import { getComponentDefinition } from '../engine/vtexComponents'
 import type { PropSchema } from '../engine/types'
@@ -12,6 +13,7 @@ export default function PropertiesPanel() {
     // Subscribimos el componente al resultado de getSelectedNode() para que 
     // re-renderice al modificar props o el identifier.
     const node = useLandingStore((s) => s.getSelectedNode())
+    const [blockFilter, setBlockFilter] = useState('')
 
     if (!node) {
         return (
@@ -34,7 +36,8 @@ export default function PropertiesPanel() {
 
     // Para nodos de referencia, mostrar UI especial
     if (isBlockReference) {
-        const blockKeys = getAllBlockKeys()
+        const allKeys = getAllBlockKeys()
+        const blockKeys = allKeys.filter(k => k.toLowerCase().includes(blockFilter.toLowerCase()))
         const currentTarget = node.props.__targetKey || ''
         return (
             <div className="flex flex-col h-full relative z-10">
@@ -68,22 +71,33 @@ export default function PropertiesPanel() {
                                 />
                             </div>
 
-                            {blockKeys.length > 0 && (
-                                <div>
+                            {allKeys.length > 0 && (
+                                <div className="space-y-2">
                                     <label className="text-[10px] text-slate-500 font-semibold mb-1 block">O seleccionar del canvas</label>
+                                    <input
+                                        type="text"
+                                        placeholder="🔍 Buscar bloque..."
+                                        value={blockFilter}
+                                        onChange={(e) => setBlockFilter(e.target.value)}
+                                        className="w-full bg-white/40 dark:bg-black/10 border border-black/5 dark:border-white/5 rounded-lg px-2 py-1.5 text-[11px]
+                                            text-slate-700 dark:text-slate-300 placeholder-slate-400 focus:border-cyan-500/30 transition-all outline-none"
+                                    />
                                     <select
-                                        value={blockKeys.includes(currentTarget) ? currentTarget : ''}
+                                        value={allKeys.includes(currentTarget) ? currentTarget : ''}
                                         onChange={(e) => handlePropChange('__targetKey', e.target.value)}
                                         className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
                                             text-slate-900 dark:text-white focus:border-cyan-500/50 focus:bg-cyan-500/5
                                             focus:ring-1 focus:ring-cyan-500/30 transition-all backdrop-blur-sm shadow-inner"
                                     >
                                         <option value="" className="dark:bg-slate-800 dark:text-slate-200">— Seleccioná un bloque —</option>
-                                        {blockKeys.map((key) => (
-                                            <option key={key} value={key} className="dark:bg-slate-800 dark:text-slate-200">
-                                                {key}
-                                            </option>
-                                        ))}
+                                        {blockKeys.map((key) => {
+                                            const [type, id] = key.split('#')
+                                            return (
+                                                <option key={key} value={key} title={key} className="dark:bg-slate-800 dark:text-slate-200">
+                                                    #{id} ({type})
+                                                </option>
+                                            )
+                                        })}
                                     </select>
                                 </div>
                             )}
