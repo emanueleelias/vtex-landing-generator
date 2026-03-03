@@ -82,7 +82,7 @@ select:focus {
   }
 }
 
-/* Mesh Gradient Animado (Fondo global) */
+/* Fondo global estático y limpio */
 .mesh-bg {
   position: fixed;
   top: 0;
@@ -90,80 +90,28 @@ select:focus {
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-color: #f8fafc;
+  background-color: #f1f5f9; /* Slate 100 suave */
   overflow: hidden;
   transition: background-color 0.3s ease;
 }
 
-.dark .mesh-bg {
-  background-color: #0a0a0f;
-}
-
-.mesh-blob-1,
-.mesh-blob-2,
-.mesh-blob-3 {
+/* Cuadrícula de puntos sutil para dar textura sin distracciones */
+.mesh-bg::after {
+  content: "";
   position: absolute;
-  filter: blur(80px);
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: float 20s infinite ease-in-out alternate;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle at center, white, transparent 90%);
+  pointer-events: none;
 }
 
-/* Modo claro (colores pastel vivos) */
-.mesh-blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, rgba(147, 197, 253, 0.4) 0%, rgba(147, 197, 253, 0) 70%);
-  animation-duration: 25s;
+.dark .mesh-bg {
+  background-color: #020617; /* Slate 950 muy profundo */
 }
 
-.mesh-blob-2 {
-  bottom: -20%;
-  right: -10%;
-  width: 60vw;
-  height: 60vw;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, rgba(20, 184, 166, 0) 70%);
-  animation-duration: 30s;
-  animation-delay: -5s;
-}
-
-.mesh-blob-3 {
-  top: 40%;
-  left: 30%;
-  width: 40vw;
-  height: 40vw;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.3) 0%, rgba(167, 139, 250, 0) 70%);
-  animation-duration: 28s;
-  animation-direction: alternate-reverse;
-}
-
-/* Modo oscuro (colores profundos) */
-.dark .mesh-blob-1 {
-  background: radial-gradient(circle, rgba(10, 10, 15, 0.8) 0%, rgba(10, 10, 15, 0) 70%);
-}
-
-.dark .mesh-blob-2 {
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, rgba(20, 184, 166, 0) 70%);
-}
-
-.dark .mesh-blob-3 {
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.1) 0%, rgba(13, 148, 136, 0) 70%);
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate(5%, 5%) scale(1.05);
-  }
-
-  100% {
-    transform: translate(-5%, 10%) scale(0.95);
-  }
+.dark .mesh-bg::after {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
 }
 
 /* Animación de entrada para bloques */

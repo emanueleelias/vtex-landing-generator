@@ -37,20 +37,24 @@ export default function Canvas() {
                 }}
             >
                 {tree.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-500 dark:text-slate-400 relative">
+                    <div className="flex flex-col items-center justify-center h-full p-6 text-slate-500 dark:text-slate-400">
                         <DropZone
                             id="root-empty"
                             parentId={null}
                             index={0}
-                            className="absolute inset-4 rounded-xl border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 flex items-center justify-center text-sm font-medium z-10 bg-black/5 dark:bg-slate-800/10 text-slate-600 dark:text-slate-400"
-                            text="Soltá un componente aquí"
-                        />
-                        <LayoutList size={48} className="mb-6 opacity-20 text-slate-800 dark:text-white" />
-                        <p className="text-base font-semibold text-slate-700 dark:text-slate-300 mb-2">Sin componentes</p>
-                        <p className="text-xs text-center px-12 relative z-20 pointer-events-none text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
-                            Seleccioná o arrastrá un componente del panel izquierdo para comenzar.<br />
-                            Usá <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Desktop</span> y <span className="text-teal-600 dark:text-teal-400/80 font-medium">Responsive Mobile</span> para separar las vistas.
-                        </p>
+                            className="w-full h-full rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-800 flex flex-col items-center justify-center bg-black/5 dark:bg-white/5 transition-colors"
+                        >
+                            <LayoutList size={48} className="mb-6 opacity-20 text-slate-800 dark:text-white" />
+                            <p className="text-base font-bold text-slate-700 dark:text-slate-200 mb-2 uppercase tracking-wide">
+                                Sin componentes
+                            </p>
+                            <p className="text-xs text-center px-8 relative z-20 pointer-events-none text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+                                Seleccioná o arrastrá un componente del panel izquierdo para comenzar.<br />
+                                <span className="opacity-60">
+                                    Usá <span className="text-teal-600 dark:text-teal-400 font-medium">Responsive Desktop</span> y <span className="text-teal-600 dark:text-teal-400 font-medium">Responsive Mobile</span> para separar las vistas.
+                                </span>
+                            </p>
+                        </DropZone>
                     </div>
                 ) : (
                     <div className="p-4 flex flex-col min-h-full">

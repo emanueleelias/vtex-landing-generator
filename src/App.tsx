@@ -115,11 +115,7 @@ export default function App() {
       onDragEnd={handleDragEnd}
       collisionDetection={pointerWithin} // point intersection is better for thin DropZones
     >
-      <div className="mesh-bg">
-        <div className="mesh-blob-1" />
-        <div className="mesh-blob-2" />
-        <div className="mesh-blob-3" />
-      </div>
+      <div className="mesh-bg" />
 
       <div className="flex flex-col h-screen relative z-0 text-slate-800 dark:text-slate-100">
         {/* Header */}

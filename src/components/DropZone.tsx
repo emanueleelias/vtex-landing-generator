@@ -7,9 +7,10 @@ interface DropZoneProps {
     className?: string
     text?: string
     targetType?: 'children' | 'blocks'
+    children?: React.ReactNode
 }
 
-export default function DropZone({ id, parentId, index, className, text, targetType = 'children' }: DropZoneProps) {
+export default function DropZone({ id, parentId, index, className, text, targetType = 'children', children }: DropZoneProps) {
     const { setNodeRef, isOver } = useDroppable({
         id,
         data: { type: 'drop-zone', parentId, index, targetType },
@@ -24,6 +25,7 @@ export default function DropZone({ id, parentId, index, className, text, targetT
                     }`}
             >
                 {text}
+                {children}
             </div>
         )
     }
