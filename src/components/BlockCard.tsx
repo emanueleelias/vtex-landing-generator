@@ -96,8 +96,12 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
-                            {node.type === '__block-reference' ? (
+                        <div className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate flex items-center gap-1.5">
+                            {node.type === 'comment' ? (
+                                <span className="text-slate-500 dark:text-slate-400 italic font-mono text-xs truncate">
+                                    // {node.props.text || 'Comentario'}
+                                </span>
+                            ) : node.type === '__block-reference' ? (
                                 <>
                                     <Link2 size={14} className="text-cyan-500 flex-shrink-0" />
                                     <span className="text-cyan-700 dark:text-cyan-300">REF</span>
@@ -112,19 +116,21 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                                     )}
                                 </>
                             )}
-                        </p>
+                        </div>
                         {acceptsChildren && (
                             <span className={`inline-flex items-center text-[9px] font-semibold px-1.5 py-px rounded-full ${colors.badge}`}>
                                 {node.children.length}
                             </span>
                         )}
                     </div>
-                    <p className="text-[10px] text-slate-500 font-mono truncate">
-                        {node.type === '__block-reference'
-                            ? (node.props.__targetKey || 'Sin bloque asignado')
-                            : `#${node.identifier}`
-                        }
-                    </p>
+                    {node.type !== 'comment' && (
+                        <p className="text-[10px] text-slate-500 font-mono truncate">
+                            {node.type === '__block-reference'
+                                ? (node.props.__targetKey || 'Sin bloque asignado')
+                                : `#${node.identifier}`
+                            }
+                        </p>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-0.5 flex-shrink-0">

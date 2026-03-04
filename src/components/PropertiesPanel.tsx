@@ -125,49 +125,59 @@ export default function PropertiesPanel() {
                 <p className="text-xs text-teal-600 dark:text-teal-400 mt-0.5 font-medium drop-shadow-sm">
                     {definition?.label || node.type}
                 </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                    {node.type}#{node.identifier}
-                </p>
+                {node.type !== 'comment' && (
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                        {node.type}#{node.identifier}
+                    </p>
+                )}
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-5">
                 {/* Identifier */}
-                <div className="space-y-3">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
-                        <Hash size={12} />
-                        Identificador
-                    </label>
-                    <input
-                        type="text"
-                        value={node.identifier}
-                        onChange={(e) => updateNodeIdentifier(node.id, e.target.value)}
-                        className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                {node.type !== 'comment' && (
+                    <>
+                        <div className="space-y-3">
+                            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
+                                <Hash size={12} />
+                                Identificador
+                            </label>
+                            <input
+                                type="text"
+                                value={node.identifier}
+                                onChange={(e) => updateNodeIdentifier(node.id, e.target.value)}
+                                className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
               text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-teal-500/50 focus:bg-teal-500/5
               focus:ring-1 focus:ring-teal-500/30 transition-all font-mono text-xs backdrop-blur-sm shadow-inner"
-                    />
-                </div>
+                            />
+                        </div>
 
-                <div className="h-px bg-black/10 dark:bg-white/5" />
+                        <div className="h-px bg-black/10 dark:bg-white/5" />
+                    </>
+                )}
 
                 {/* Global Title */}
-                <div className="space-y-3">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
-                        <Tag size={12} />
-                        Título (Site Editor)
-                    </label>
-                    <input
-                        type="text"
-                        value={node.title || ''}
-                        onChange={(e) => updateNodeTitle(node.id, e.target.value)}
-                        placeholder="Nombre a mostrar en Site Editor"
-                        className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
+                {node.type !== 'comment' && (
+                    <>
+                        <div className="space-y-3">
+                            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 drop-shadow-sm">
+                                <Tag size={12} />
+                                Título (Site Editor)
+                            </label>
+                            <input
+                                type="text"
+                                value={node.title || ''}
+                                onChange={(e) => updateNodeTitle(node.id, e.target.value)}
+                                placeholder="Nombre a mostrar en Site Editor"
+                                className="w-full bg-white/60 dark:bg-black/20 border border-black/5 dark:border-white/10 rounded-lg px-3 py-2 text-sm
                   text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-emerald-500/50 focus:bg-emerald-500/5
                   focus:ring-1 focus:ring-emerald-500/30 transition-all backdrop-blur-sm shadow-inner"
-                    />
-                </div>
+                            />
+                        </div>
 
-                {/* Divider */}
-                <div className="h-px bg-black/10 dark:bg-white/5" />
+                        {/* Divider */}
+                        <div className="h-px bg-black/10 dark:bg-white/5" />
+                    </>
+                )}
 
                 {/* Props del componente */}
                 <div className="space-y-3">

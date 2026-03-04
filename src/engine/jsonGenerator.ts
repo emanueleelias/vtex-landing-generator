@@ -7,8 +7,12 @@ import { getComponentDefinition } from './vtexComponents'
 
 /**
  * Construye la clave VTEX del nodo: "tipo#identifier"
+ * Para comentarios usamos un prefijo especial.
  */
 function nodeKey(node: TreeNode): string {
+  if (node.type === 'comment') {
+    return `__COMMENT__${node.id}`
+  }
   return `${node.type}#${node.identifier}`
 }
 
@@ -75,11 +79,19 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
     if (node.type === '__block-reference') continue
 
     const key = nodeKey(node)
+
+    // Si es un comentario, lo guardamos con su valor de texto y saltamos el resto del procesamiento estándar
+    if (node.type === 'comment') {
+      output[key] = node.props.text || ''
+      continue
+    }
+
     const entry: Record<string, any> = {}
 
     // Procesar children
     if (node.children && node.children.length > 0) {
       const validChildren = node.children.filter((child) => {
+        if (child.type === 'comment') return false // Los comentarios no van en el array de children
         const childDef = getComponentDefinition(child.type)
         const propSchema = childDef?.propsSchema.find((p) => p.name === '__topLevelOnly')
         const isTopLevel = child.props.__topLevelOnly !== undefined ? child.props.__topLevelOnly : (propSchema?.default ?? false)
@@ -99,6 +111,7 @@ function processTree(nodes: TreeNode[], output: Record<string, any>): void {
     // Procesar blocks
     if (node.blocks && node.blocks.length > 0) {
       const validBlocks = node.blocks.filter((blockChild) => {
+        if (blockChild.type === 'comment') return false // Los comentarios no van en el array de blocks
         const childDef = getComponentDefinition(blockChild.type)
         const propSchema = childDef?.propsSchema.find((p) => p.name === '__topLevelOnly')
         const isTopLevel = blockChild.props.__topLevelOnly !== undefined ? blockChild.props.__topLevelOnly : (propSchema?.default ?? false)
@@ -151,7 +164,9 @@ export function generateLandingJSON(state: {
 
   // Nodo raíz: store.custom con los nodos de nivel superior como blocks
   output[`store.custom#${landingName}`] = {
-    blocks: tree.map((node) => nodeKey(node)),
+    blocks: tree
+      .filter((node) => node.type !== 'comment') // Filtrar comentarios del array de bloques raíz
+      .map((node) => nodeKey(node)),
   }
 
   // Procesar todo el árbol
@@ -182,9 +197,24 @@ export function generateBlockJSON(state: {
  */
 export function serializeToJSONC(jsonObj: Record<string, any>, _landingName: string, stripWrapper = false): string {
   const raw = JSON.stringify(jsonObj, null, 2)
-  if (!stripWrapper) return raw
+  
+  // Procesar líneas para convertir __COMMENT__ en comentarios reales
+  const lines = raw.split('\n')
+  const processedLines = lines.map(line => {
+    // Buscar el patrón "__COMMENT__someid": "texto"
+    const commentMatch = line.match(/"__COMMENT__[^"]+":\s*"(.*)"(,?)/)
+    if (commentMatch) {
+      const text = commentMatch[1]
+      const comma = commentMatch[2]
+      // Mantener la indentación original
+      const indentation = line.match(/^\s*/)?.[0] || ''
+      return `${indentation}// ${text}${comma === ',' ? '' : ''}`
+    }
+    return line
+  })
+
+  if (!stripWrapper) return processedLines.join('\n')
 
   // Quitar primera línea "{" y última línea "}"
-  const lines = raw.split('\n')
-  return lines.slice(1, -1).join('\n')
+  return processedLines.slice(1, -1).join('\n')
 }

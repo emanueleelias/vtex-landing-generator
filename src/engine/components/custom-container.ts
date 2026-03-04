@@ -4,7 +4,7 @@ export const customContainer: VtexComponentDefinition = {
     type: 'custom-container',
     label: 'Custom Container',
     icon: 'Box',
-    category: 'layout',
+    category: 'utility',
     acceptsChildren: true,
     propsSchema: [
         { name: 'active', type: 'boolean', label: 'Activo', default: true },
