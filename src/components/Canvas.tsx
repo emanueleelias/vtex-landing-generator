@@ -4,12 +4,14 @@
 import useLandingStore from '../store/landingStore'
 import NodeCard from './BlockCard'
 import DropZone from './DropZone'
-import { LayoutList } from 'lucide-react'
+import { LayoutList, Maximize2, Minimize2 } from 'lucide-react'
 import React from 'react'
 
 export default function Canvas() {
     const tree = useLandingStore((s) => s.tree)
     const selectNode = useLandingStore((s) => s.selectNode)
+    const expandAll = useLandingStore((s) => s.expandAll)
+    const collapseAll = useLandingStore((s) => s.collapseAll)
 
     /** Cuenta total de nodos (recursivo) */
     function countNodes(nodes: typeof tree): number {
@@ -19,13 +21,36 @@ export default function Canvas() {
     return (
         <div className="flex flex-col h-full bg-white/40 dark:bg-black/20 rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden backdrop-blur-md shadow-inner relative z-0">
             {/* Header unificado */}
-            <div className="flex items-center gap-2 px-6 py-4 border-b border-black/5 dark:border-white/5">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-black/5 dark:border-white/5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
                     <LayoutList size={18} className="text-teal-500" />
                     Estructura
                     <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                         {countNodes(tree)}
                     </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => expandAll()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider
+                        text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400
+                        bg-black/5 dark:bg-white/5 hover:bg-teal-500/10 dark:hover:bg-teal-500/10 transition-all border border-transparent hover:border-teal-500/20"
+                        title="Expandir todos los componentes"
+                    >
+                        <Maximize2 size={12} />
+                        Expandir
+                    </button>
+                    <button
+                        onClick={() => collapseAll()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider
+                        text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400
+                        bg-black/5 dark:bg-white/5 hover:bg-amber-500/10 dark:hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/20"
+                        title="Contraer todos los componentes"
+                    >
+                        <Minimize2 size={12} />
+                        Contraer
+                    </button>
                 </div>
             </div>
 

@@ -4,7 +4,7 @@
  */
 import { useDraggable } from '@dnd-kit/core'
 import DropZone from './DropZone'
-import React, { useState } from 'react'
+import React from 'react'
 import useLandingStore from '../store/landingStore'
 import { getComponentDefinition } from '../engine/vtexComponents'
 import type { TreeNode } from '../engine/types'
@@ -32,14 +32,14 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
     const selectNode = useLandingStore((s) => s.selectNode)
     const removeNode = useLandingStore((s) => s.removeNode)
     const moveNode = useLandingStore((s) => s.moveNode)
-
-    const [collapsed, setCollapsed] = useState(false)
+    const toggleNodeExpansion = useLandingStore((s) => s.toggleNodeExpansion)
 
     const definition = getComponentDefinition(node.type)
     const isSelected = selectedNodeId === node.id
     const hasChildren = node.children.length > 0
     const acceptsChildren = definition?.acceptsChildren ?? false
     const acceptsBlocks = definition?.acceptsBlocks ?? false
+    const collapsed = node.collapsed ?? false
 
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
         id: `node-${node.id}`,
@@ -79,11 +79,11 @@ export default function NodeCard({ node, index, total }: NodeCardProps) {
                 </div>
 
                 {/* Toggle expand/collapse */}
-                {hasChildren ? (
+                {hasChildren || (node.blocks && node.blocks.length > 0) || acceptsChildren || acceptsBlocks ? (
                     <button
                         onClick={(e) => {
                             e.stopPropagation()
-                            setCollapsed(!collapsed)
+                            toggleNodeExpansion(node.id)
                         }}
                         className="flex-shrink-0 p-0.5 rounded text-slate-400 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
                     >

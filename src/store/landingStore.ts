@@ -21,6 +21,9 @@ interface LandingState {
   updateNodeProps: (nodeId: string, props: Record<string, any>) => void
   updateNodeIdentifier: (nodeId: string, identifier: string) => void
   updateNodeTitle: (nodeId: string, title: string) => void
+  toggleNodeExpansion: (nodeId: string) => void
+  expandAll: () => void
+  collapseAll: () => void
   getSelectedNode: () => TreeNode | null
 
   // DnD actions
@@ -121,8 +124,6 @@ function moveInTree(tree: TreeNode[], id: string, direction: number): TreeNode[]
   })
 }
 
-
-
 function insertNodeAt(tree: TreeNode[], parentId: string | null, index: number, node: TreeNode, targetType: 'children' | 'blocks' = 'children'): TreeNode[] {
   if (parentId === null) {
     const copy = [...tree]
@@ -185,6 +186,7 @@ function createNode(componentType: string, landingName: string): TreeNode {
     identifier: landingName,
     props: {},
     children: [],
+    collapsed: false,
   }
 
   if (definition?.childrenTemplate) {
@@ -198,6 +200,15 @@ function createNode(componentType: string, landingName: string): TreeNode {
   }
 
   return node
+}
+
+function setAllExpansion(tree: TreeNode[], collapsed: boolean): TreeNode[] {
+  return tree.map((node) => ({
+    ...node,
+    collapsed,
+    children: setAllExpansion(node.children, collapsed),
+    blocks: node.blocks ? setAllExpansion(node.blocks, collapsed) : undefined,
+  }))
 }
 
 /**
@@ -489,6 +500,27 @@ const useLandingStore = create<LandingState>()(
         }))
       },
 
+      toggleNodeExpansion: (nodeId) => {
+        const updater = (node: TreeNode): TreeNode => ({
+          ...node,
+          collapsed: !node.collapsed,
+        })
+        set((state) => ({
+          tree: updateInTree(state.tree, nodeId, updater),
+        }))
+      },
+
+      expandAll: () => {
+        set((state) => ({
+          tree: setAllExpansion(state.tree, false),
+        }))
+      },
+
+      collapseAll: () => {
+        set((state) => ({
+          tree: setAllExpansion(state.tree, true),
+        }))
+      },
 
       getSelectedNode: () => {
         const { selectedNodeId, tree } = get()

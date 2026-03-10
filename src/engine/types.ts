@@ -40,4 +40,5 @@ export interface TreeNode {
   props: Record<string, any>
   children: TreeNode[]
   blocks?: TreeNode[]
+  collapsed?: boolean
 }
